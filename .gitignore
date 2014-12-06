@@ -1,0 +1,14 @@
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+compile_commands.json
+generate
+libxsdcxx-musicxml.a
+musicxml-*.cxx
+musicxml.hxx
+roundtrip
+xlink.cxx
+xlink.hxx
+xml.cxx
+xml.hxx

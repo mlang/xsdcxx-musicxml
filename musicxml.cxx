@@ -78814,6 +78814,14 @@ void operator<<(::xercesc::DOMElement &e, const note &i) {
     s << *i.grace();
   }
 
+  // cue
+  //
+  if (i.cue()) {
+    ::xercesc::DOMElement &s(::xsd::cxx::xml::dom::create_element("cue", e));
+
+    s << *i.cue();
+  }
+
   // chord
   //
   if (i.chord()) {
@@ -78847,22 +78855,6 @@ void operator<<(::xercesc::DOMElement &e, const note &i) {
     s << *i.rest();
   }
 
-  // tie
-  //
-  for (const auto &elem : i.tie()) {
-    ::xercesc::DOMElement &s(::xsd::cxx::xml::dom::create_element("tie", e));
-
-    s << elem;
-  }
-
-  // cue
-  //
-  if (i.cue()) {
-    ::xercesc::DOMElement &s(::xsd::cxx::xml::dom::create_element("cue", e));
-
-    s << *i.cue();
-  }
-
   // duration
   //
   if (i.duration()) {
@@ -78870,6 +78862,14 @@ void operator<<(::xercesc::DOMElement &e, const note &i) {
       ::xsd::cxx::xml::dom::create_element("duration", e));
 
     s << *i.duration();
+  }
+
+  // tie
+  //
+  for (const auto &elem : i.tie()) {
+    ::xercesc::DOMElement &s(::xsd::cxx::xml::dom::create_element("tie", e));
+
+    s << elem;
   }
 
   // instrument

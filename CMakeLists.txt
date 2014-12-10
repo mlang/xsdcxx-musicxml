@@ -11,6 +11,7 @@ set(XSDCXX_FLAGS cxx-tree
     --generate-ostream --generate-serialization
 )
 
+# Generate bindings from XSD files:
 foreach(BASENAME xml xlink)
   add_custom_command(
     OUTPUT ${PROJECT_BINARY_DIR}/${BASENAME}.cpp
@@ -36,14 +37,15 @@ add_custom_command(
   DEPENDS ${CMAKE_SOURCE_DIR}/musicxml.xsd
 )
 
-add_library(xsdcxx-musicxml
-  dom-parse.cpp note.cpp
-  musicxml-0.cpp musicxml-1.cpp musicxml-2.cpp musicxml-3.cpp xlink.cpp xml.cpp
+set(SOURCES
+    dom-parse.cpp note.cpp
+    musicxml-0.cpp musicxml-1.cpp musicxml-2.cpp musicxml-3.cpp
+    xlink.cpp xml.cpp
 )
+add_library(xsdcxx-musicxml STATIC ${SOURCES})
 target_link_libraries(xsdcxx-musicxml ${XERCESC_LIBRARY})
 
-add_executable(generate generate.cpp)
-target_link_libraries(generate xsdcxx-musicxml)
-add_executable(roundtrip roundtrip.cpp)
-target_link_libraries(roundtrip xsdcxx-musicxml)
-
+foreach(PROG generate roundtrip)
+  add_executable(${PROG} ${PROG}.cpp)
+  target_link_libraries(${PROG} xsdcxx-musicxml)
+endforeach(PROG generate roundtrip)

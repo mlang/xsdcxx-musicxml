@@ -1,16 +1,12 @@
-#include "document.hxx"
+#include "musicxml.hpp"
 #include <string>
 #include <fstream>
 #include <iostream>
-
-#include <xercesc/util/PlatformUtils.hpp>
 
 using namespace std;
 
 int main (int argc, char* argv[]) {
   int r = EXIT_SUCCESS;
-
-//  xercesc::XMLPlatformUtils::Initialize ();
 
   try
   {
@@ -55,8 +51,6 @@ int main (int argc, char* argv[]) {
     cerr << e << endl;
     r = EXIT_FAILURE;
   }
-
-//  xercesc::XMLPlatformUtils::Terminate ();
 
   return r;
 }

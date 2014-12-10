@@ -5,10 +5,10 @@ cmake_install.cmake
 compile_commands.json
 generate
 libxsdcxx-musicxml.a
-musicxml.hxx
-musicxml-*.cxx
+musicxml.hpp
+musicxml-*.cpp
 roundtrip
-xlink.cxx
-xlink.hxx
-xml.cxx
-xml.hxx
+xlink.cpp
+xlink.hpp
+xml.cpp
+xml.hpp

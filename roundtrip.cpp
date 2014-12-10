@@ -1,4 +1,4 @@
-#include "document.hxx"
+#include "musicxml.hpp"
 #include <string>
 #include <fstream>
 #include <iostream>

@@ -1,6 +1,3 @@
-#if !defined(DOCUMENT_HXX)
-#define DOCUMENT_HXX
-
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -15,8 +12,7 @@
 
 #include <xsd/cxx/xml/string.hxx>       // xml::transcode
 
-#include "dom-parse.hxx"
-#include "musicxml.hxx"
+#include "dom-parse.hpp"
 
 namespace musicxml {
 
@@ -105,5 +101,4 @@ DEFINE_PUSH_BACK(sound)
 
 #undef DEFINE_PUSH_BACK
 }
-#endif
 

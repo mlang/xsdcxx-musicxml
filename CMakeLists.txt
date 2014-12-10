@@ -7,39 +7,43 @@ add_definitions(-std=c++11)
 find_package(XSDCXX REQUIRED)
 set(XSDCXX_FLAGS cxx-tree
     --output-dir ${PROJECT_BINARY_DIR}
-    --std c++11 --generate-ostream --generate-serialization)
+    --std c++11 --cxx-suffix .cpp --hxx-suffix .hpp
+    --generate-ostream --generate-serialization
+)
 
 foreach(BASENAME xml xlink)
   add_custom_command(
-    OUTPUT ${PROJECT_BINARY_DIR}/${BASENAME}.cxx
-           ${PROJECT_BINARY_DIR}/${BASENAME}.hxx
+    OUTPUT ${PROJECT_BINARY_DIR}/${BASENAME}.cpp
+           ${PROJECT_BINARY_DIR}/${BASENAME}.hpp
     COMMAND ${XSDCXX_EXECUTABLE} ${XSDCXX_FLAGS} ${BASENAME}.xsd
     DEPENDS ${PROJECT_SOURCE_DIR}/${BASENAME}.xsd
   )
 endforeach(BASENAME xml xlink)
 add_custom_command(
-  OUTPUT ${PROJECT_BINARY_DIR}/musicxml-0.cxx
-         ${PROJECT_BINARY_DIR}/musicxml-1.cxx
-         ${PROJECT_BINARY_DIR}/musicxml-2.cxx
-         ${PROJECT_BINARY_DIR}/musicxml-3.cxx
-         ${PROJECT_BINARY_DIR}/musicxml.hxx
+  OUTPUT ${PROJECT_BINARY_DIR}/musicxml-0.cpp
+         ${PROJECT_BINARY_DIR}/musicxml-1.cpp
+         ${PROJECT_BINARY_DIR}/musicxml-2.cpp
+         ${PROJECT_BINARY_DIR}/musicxml-3.cpp
+         ${PROJECT_BINARY_DIR}/musicxml.hpp
   COMMAND ${XSDCXX_EXECUTABLE} ${XSDCXX_FLAGS} --generate-doxygen
     --namespace-map =musicxml --location-regex '%http://.+/\(.+\)%$$1%'
     --root-element-all --ordered-type measure1 --ordered-type part1
-    --custom-type note=/note_base --hxx-epilogue '\#include \"note.hxx\"'
+    --custom-type note=/note_base
+    --hxx-epilogue '\#include \"note.hpp\"'
+    --hxx-epilogue '\#include \"utilities.hpp\"'
     --parts 4
     musicxml.xsd
-  DEPENDS ${CMAKE_BINARY_DIR}/musicxml.xsd
+  DEPENDS ${CMAKE_SOURCE_DIR}/musicxml.xsd
 )
 
 add_library(xsdcxx-musicxml
-  dom-parse.cxx note.cxx
-  musicxml-0.cxx musicxml-1.cxx musicxml-2.cxx musicxml-3.cxx xlink.cxx xml.cxx
+  dom-parse.cpp note.cpp
+  musicxml-0.cpp musicxml-1.cpp musicxml-2.cpp musicxml-3.cpp xlink.cpp xml.cpp
 )
 target_link_libraries(xsdcxx-musicxml ${XERCESC_LIBRARY})
 
-add_executable(generate generate.cxx)
+add_executable(generate generate.cpp)
 target_link_libraries(generate xsdcxx-musicxml)
-add_executable(roundtrip roundtrip.cxx)
+add_executable(roundtrip roundtrip.cpp)
 target_link_libraries(roundtrip xsdcxx-musicxml)
 

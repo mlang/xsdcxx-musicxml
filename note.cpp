@@ -1,4 +1,5 @@
-#include "musicxml.hxx"
+#include "musicxml.hpp"
+
 #include <xsd/cxx/xml/dom/serialization-source.hxx>
 
 namespace musicxml {

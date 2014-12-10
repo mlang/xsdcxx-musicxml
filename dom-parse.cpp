@@ -1,4 +1,4 @@
-#include "dom-parse.hxx"
+#include "dom-parse.hpp"
 
 #include <istream>
 

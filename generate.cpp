@@ -29,19 +29,21 @@ int main (int argc, char* argv[]) {
       push_back(measure, attributes);
     }
     {
-      musicxml::note note{};
-      note.duration(768*4);
+      musicxml::note note {
+        ::musicxml::pitch{musicxml::step::C, 4},
+        ::musicxml::positive_divisions{768*4}
+      };
       note.type(musicxml::note_type_value::whole);
-      note.pitch({musicxml::step::C, 4});
       note.voice("1");
       push_back(measure, note);
     }
     push_back(measure, musicxml::backup{768*4});
     {
-      musicxml::note note{};
-      note.duration(768*4);
+      musicxml::note note {
+        ::musicxml::pitch{musicxml::step::G, 4},
+        ::musicxml::positive_divisions{768*4}
+      };
       note.type(musicxml::note_type_value::whole);
-      note.pitch({musicxml::step::G, 4});
       note.voice("2");
       push_back(measure, note);
     }

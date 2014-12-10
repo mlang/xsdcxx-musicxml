@@ -4,7 +4,22 @@
 
 namespace musicxml {
 
-note::note() : note_base{} {}
+note::note(const pitch_type &pitch, const duration_type &duration)
+: note_base{} {
+  this->pitch(pitch);
+  this->duration(duration);
+}
+
+note::note(const unpitched_type &unpitched, const duration_type &duration)
+: note_base{} {
+  this->unpitched(unpitched);
+  this->duration(duration);
+}
+
+note::note(const rest_type &rest, const duration_type &duration) : note_base{} {
+  this->rest(rest);
+  this->duration(duration);
+}
 
 note::note(const note &x, ::xml_schema::flags f, ::xml_schema::container *c)
 : note_base{x, f, c} {}
@@ -12,6 +27,21 @@ note::note(const note &x, ::xml_schema::flags f, ::xml_schema::container *c)
 note::note(const ::xercesc::DOMElement &e, ::xml_schema::flags f,
            ::xml_schema::container *c)
 : note_base{e, f, c} {}
+
+void note::grace (const grace_type& x) {
+  this->duration().reset();
+  note_base::grace(x);
+}
+
+void note::grace (const grace_optional& x) {
+  if (x) this->duration().reset();
+  note_base::grace(x);
+}
+
+void note::grace (::std::unique_ptr< grace_type > p) {
+  if (p) this->duration().reset();
+  note_base::grace(std::move(p));
+}
 
 note *note::_clone(::xml_schema::flags f, ::xml_schema::container *c) const {
   return new class note(*this, f, c);

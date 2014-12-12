@@ -67,15 +67,6 @@ inline score_timewise document<score_timewise>(std::istream& is, const std::stri
 }
 
 #define DEFINE_PUSH_BACK(child) \
-inline void push_back(score_partwise::part_type::measure_type &measure,     \
-               child const &c)                         \
-{                                                                              \
-  measure.child().push_back(c);                                  \
-  measure.content_order().push_back({ \
-    std::remove_reference<decltype(measure)>::type::child##_id, \
-    measure.child().size() - 1 \
-  }); \
-} \
 inline void push_back(score_timewise::measure_type::part_type &part,     \
                child const &c)                         \
 {                                                                              \

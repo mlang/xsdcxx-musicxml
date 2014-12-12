@@ -1,5 +1,6 @@
 #include "musicxml.hpp"
 #include <xsd/cxx/xml/dom/serialization-source.hxx>
+#include "music_data_serialization_visitor.hpp"
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
 
 namespace musicxml {
@@ -62,13 +63,17 @@ void measure1::width(::std::unique_ptr<width_type> x) {
   this->width_.set(std::move(x));
 }
 
-const measure1::variant_sequence &measure1::variant() const {
-  return this->variant_;
+const measure1::music_data_sequence &measure1::music_data() const {
+  return this->music_data_;
 }
 
-measure1::variant_sequence &measure1::variant() { return this->variant_; }
+measure1::music_data_sequence &measure1::music_data() {
+  return this->music_data_;
+}
 
-void measure1::variant(const variant_sequence &s) { this->variant_ = s; }
+void measure1::music_data(const music_data_sequence &s) {
+  this->music_data_ = s;
+}
 
 measure1::measure1(const number_type &number)
 : ::xml_schema::type()
@@ -80,7 +85,7 @@ measure1::measure1(const number_type &number)
 measure1::measure1(const measure1 &x, ::xml_schema::flags f,
                    ::xml_schema::container *c)
 : ::xml_schema::type(x, f, c)
-, variant_(x.variant_)
+, music_data_(x.music_data_)
 , number_(x.number_, f, this)
 , implicit_(x.implicit_, f, this)
 , non_controlling_(x.non_controlling_, f, this)
@@ -106,98 +111,33 @@ void measure1::parse(::xsd::cxx::xml::dom::parser<char> &p,
     const ::xsd::cxx::xml::qualified_name<char> n(
       ::xsd::cxx::xml::dom::name<char>(i));
 
-    // note
-    //
     if (n.name() == "note" && n.namespace_().empty()) {
-      this->variant_.push_back(note_type(i, f, this));
-      continue;
-    }
-
-    // backup
-    //
-    if (n.name() == "backup" && n.namespace_().empty()) {
-      this->variant_.push_back(backup_type(i, f, this));
-      continue;
-    }
-
-    // forward
-    //
-    if (n.name() == "forward" && n.namespace_().empty()) {
-      this->variant_.push_back(forward_type(i, f, this));
-      continue;
-    }
-
-    // direction
-    //
-    if (n.name() == "direction" && n.namespace_().empty()) {
-      this->variant_.push_back(direction_type(i, f, this));
-      continue;
-    }
-
-    // attributes
-    //
-    if (n.name() == "attributes" && n.namespace_().empty()) {
-      this->variant_.push_back(attributes_type(i, f, this));
-      continue;
-    }
-
-    // harmony
-    //
-    if (n.name() == "harmony" && n.namespace_().empty()) {
-      this->variant_.push_back(harmony_type(i, f, this));
-      continue;
-    }
-
-    // figured-bass
-    //
-    if (n.name() == "figured-bass" && n.namespace_().empty()) {
-      this->variant_.push_back(figured_bass_type(i, f, this));
-      continue;
-    }
-
-    // print
-    //
-    if (n.name() == "print" && n.namespace_().empty()) {
-      this->variant_.push_back(print_type(i, f, this));
-      continue;
-    }
-
-    // sound
-    //
-    if (n.name() == "sound" && n.namespace_().empty()) {
-      this->variant_.push_back(sound_type(i, f, this));
-      continue;
-    }
-
-    // barline
-    //
-    if (n.name() == "barline" && n.namespace_().empty()) {
-      this->variant_.push_back(barline_type(i, f, this));
-      continue;
-    }
-
-    // grouping
-    //
-    if (n.name() == "grouping" && n.namespace_().empty()) {
-      this->variant_.push_back(grouping_type(i, f, this));
-      continue;
-    }
-
-    // link
-    //
-    if (n.name() == "link" && n.namespace_().empty()) {
-      this->variant_.push_back(link_type(i, f, this));
-      continue;
-    }
-
-    // bookmark
-    //
-    if (n.name() == "bookmark" && n.namespace_().empty()) {
-      this->variant_.push_back(bookmark_type(i, f, this));
-      continue;
-    }
-
-    break;
+      this->music_data_.push_back(note_type(i, f, this));
+    } else if (n.name() == "backup" && n.namespace_().empty()) {
+      this->music_data_.push_back(backup_type(i, f, this));
+    } else if (n.name() == "forward" && n.namespace_().empty()) {
+      this->music_data_.push_back(forward_type(i, f, this));
+    } else if (n.name() == "direction" && n.namespace_().empty()) {
+      this->music_data_.push_back(direction_type(i, f, this));
+    } else if (n.name() == "attributes" && n.namespace_().empty()) {
+      this->music_data_.push_back(attributes_type(i, f, this));
+    } else if (n.name() == "harmony" && n.namespace_().empty()) {
+      this->music_data_.push_back(harmony_type(i, f, this));
+    } else if (n.name() == "figured-bass" && n.namespace_().empty()) {
+      this->music_data_.push_back(figured_bass_type(i, f, this));
+    } else if (n.name() == "print" && n.namespace_().empty()) {
+      this->music_data_.push_back(print_type(i, f, this));
+    } else if (n.name() == "sound" && n.namespace_().empty()) {
+      this->music_data_.push_back(sound_type(i, f, this));
+    } else if (n.name() == "barline" && n.namespace_().empty()) {
+      this->music_data_.push_back(barline_type(i, f, this));
+    } else if (n.name() == "grouping" && n.namespace_().empty()) {
+      this->music_data_.push_back(grouping_type(i, f, this));
+    } else if (n.name() == "link" && n.namespace_().empty()) {
+      this->music_data_.push_back(link_type(i, f, this));
+    } else if (n.name() == "bookmark" && n.namespace_().empty()) {
+      this->music_data_.push_back(bookmark_type(i, f, this));
+    } else { break; }
   }
 
   while (p.more_attributes()) {
@@ -239,7 +179,7 @@ measure1 *measure1::_clone(::xml_schema::flags f,
 measure1 &measure1::operator=(const measure1 &x) {
   if (this != &x) {
     static_cast<::xml_schema::type &>(*this) = x;
-    this->variant_ = x.variant_;
+    this->music_data_ = x.music_data_;
     this->number_ = x.number_;
     this->implicit_ = x.implicit_;
     this->non_controlling_ = x.non_controlling_;
@@ -250,63 +190,14 @@ measure1 &measure1::operator=(const measure1 &x) {
 }
 
 measure1::~measure1() {}
-}
-
-namespace {
-class serialization_visitor : public boost::static_visitor<void> {
-  ::xercesc::DOMElement &e;
-
-public:
-  serialization_visitor(::xercesc::DOMElement &e) : e(e) {}
-
-  void operator()(const ::musicxml::measure1::note_type &x) const {
-    ::xsd::cxx::xml::dom::create_element("note", e) << x;
-  }
-  void operator()(const ::musicxml::measure1::backup_type &x) const {
-    ::xsd::cxx::xml::dom::create_element("backup", e) << x;
-  }
-  void operator()(const ::musicxml::measure1::forward_type &x) const {
-    ::xsd::cxx::xml::dom::create_element("forward", e) << x;
-  }
-  void operator()(const ::musicxml::measure1::direction_type &x) const {
-    ::xsd::cxx::xml::dom::create_element("direction", e) << x;
-  }
-  void operator()(const ::musicxml::measure1::attributes_type &x) const {
-    ::xsd::cxx::xml::dom::create_element("attributes", e) << x;
-  }
-  void operator()(const ::musicxml::measure1::harmony_type &x) const {
-    ::xsd::cxx::xml::dom::create_element("harmony", e) << x;
-  }
-  void operator()(const ::musicxml::measure1::figured_bass_type &x) const {
-    ::xsd::cxx::xml::dom::create_element("figured-bass", e) << x;
-  }
-  void operator()(const ::musicxml::measure1::print_type &x) const {
-    ::xsd::cxx::xml::dom::create_element("print", e) << x;
-  }
-  void operator()(const ::musicxml::measure1::sound_type &x) const {
-    ::xsd::cxx::xml::dom::create_element("sound", e) << x;
-  }
-  void operator()(const ::musicxml::measure1::barline_type &x) const {
-    ::xsd::cxx::xml::dom::create_element("barline", e) << x;
-  }
-  void operator()(const ::musicxml::measure1::grouping_type &x) const {
-    ::xsd::cxx::xml::dom::create_element("grouping", e) << x;
-  }
-  void operator()(const ::musicxml::measure1::link_type &x) const {
-    ::xsd::cxx::xml::dom::create_element("link", e) << x;
-  }
-  void operator()(const ::musicxml::measure1::bookmark_type &x) const {
-    ::xsd::cxx::xml::dom::create_element("bookmark", e) << x;
-  }
-};
-}
+} // namespace musicxml
 
 namespace musicxml {
 void operator<<(::xercesc::DOMElement &e, const measure1 &i) {
   e << static_cast<const ::xml_schema::type &>(i);
 
   serialization_visitor v(e);
-  std::for_each(i.variant().begin(), i.variant().end(),
+  std::for_each(i.music_data().begin(), i.music_data().end(),
                 boost::apply_visitor(v));
 
   // number
@@ -343,4 +234,4 @@ void operator<<(::xercesc::DOMElement &e, const measure1 &i) {
     a << *i.width();
   }
 }
-}
+} // namespace musicxml

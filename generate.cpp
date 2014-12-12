@@ -26,7 +26,7 @@ int main (int argc, char* argv[]) {
       musicxml::attributes attributes {};
       attributes.divisions(768);
       attributes.staves(1);
-      measure.variant().push_back(attributes);
+      measure.music_data().push_back(attributes);
     }
     {
       musicxml::note note {
@@ -35,9 +35,9 @@ int main (int argc, char* argv[]) {
       };
       note.type(musicxml::note_type_value::whole);
       note.voice("1");
-      measure.variant().push_back(note);
+      measure.music_data().push_back(note);
     }
-    measure.variant().push_back(musicxml::backup{768*4});
+    measure.music_data().push_back(musicxml::backup{768*4});
     {
       musicxml::note note {
         ::musicxml::pitch{musicxml::step::G, 4},
@@ -45,7 +45,7 @@ int main (int argc, char* argv[]) {
       };
       note.type(musicxml::note_type_value::whole);
       note.voice("2");
-      measure.variant().push_back(note);
+      measure.music_data().push_back(note);
     }
 
     musicxml::score_partwise_(std::cout, score);

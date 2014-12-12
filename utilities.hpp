@@ -66,30 +66,5 @@ inline score_timewise document<score_timewise>(std::istream& is, const std::stri
   throw std::runtime_error("Unknown root element '" + name + "'");
 }
 
-#define DEFINE_PUSH_BACK(child) \
-inline void push_back(score_timewise::measure_type::part_type &part,     \
-               child const &c)                         \
-{                                                                              \
-  part.child().push_back(c);                                  \
-  part.content_order().push_back({ \
-    std::remove_reference<decltype(part)>::type::child##_id, \
-    part.child().size() - 1 \
-  }); \
-}
-
-DEFINE_PUSH_BACK(attributes)
-DEFINE_PUSH_BACK(backup)
-DEFINE_PUSH_BACK(barline)
-DEFINE_PUSH_BACK(direction)
-DEFINE_PUSH_BACK(figured_bass)
-DEFINE_PUSH_BACK(forward)
-DEFINE_PUSH_BACK(grouping)
-DEFINE_PUSH_BACK(harmony)
-DEFINE_PUSH_BACK(link)
-DEFINE_PUSH_BACK(note)
-DEFINE_PUSH_BACK(print)
-DEFINE_PUSH_BACK(sound)
-
-#undef DEFINE_PUSH_BACK
 }
 

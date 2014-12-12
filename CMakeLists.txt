@@ -30,6 +30,7 @@ add_custom_command(
     --root-element-all --ordered-type part1
     --custom-type note=/note_base --hxx-epilogue '\#include \"note.hpp\"'
     --custom-type measure1= --hxx-epilogue '\#include \"measure1.hpp\"'
+    --custom-type part1= --hxx-epilogue '\#include \"part1.hpp\"'
     --hxx-epilogue '\#include \"utilities.hpp\"'
     --parts 4
     musicxml.xsd
@@ -37,7 +38,7 @@ add_custom_command(
 )
 
 set(SOURCES
-    dom-parse.cpp note.cpp measure1.cpp
+    dom-parse.cpp note.cpp measure1.cpp part1.cpp
     musicxml-0.cpp musicxml-1.cpp musicxml-2.cpp musicxml-3.cpp
     xlink.cpp xml.cpp
 )

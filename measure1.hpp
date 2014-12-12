@@ -1,4 +1,4 @@
-#include <boost/variant.hpp>
+#include "music_data.hpp"
 
 namespace musicxml {
 
@@ -48,17 +48,14 @@ public:
   typedef ::musicxml::bookmark bookmark_type;
   typedef ::xsd::cxx::tree::traits<bookmark_type, char> bookmark_traits;
 
-  using variant_type = boost::variant<
-    attributes_type, note_type, backup_type, forward_type, direction_type,
-    harmony_type, figured_bass_type, print_type, sound_type, barline_type,
-    grouping_type, link_type, bookmark_type>;
-  using variant_sequence = ::std::vector<variant_type>;
-  using variant_iterator = variant_sequence::iterator;
-  using variant_const_iterator = variant_sequence::const_iterator;
+  using music_data_type = ::musicxml::music_data;
+  using music_data_sequence = ::std::vector<music_data_type>;
+  using music_data_iterator = music_data_sequence::iterator;
+  using music_data_const_iterator = music_data_sequence::const_iterator;
 
-  const variant_sequence &variant() const;
-  variant_sequence &variant();
-  void variant(const variant_sequence &);
+  const music_data_sequence &music_data() const;
+  music_data_sequence &music_data();
+  void music_data(const music_data_sequence &);
 
   /**
    * @name number
@@ -403,7 +400,7 @@ protected:
   void parse(::xsd::cxx::xml::dom::parser<char> &, ::xml_schema::flags);
 
 protected:
-  variant_sequence variant_;
+  music_data_sequence music_data_;
 
   ::xsd::cxx::tree::one<number_type> number_;
   implicit_optional implicit_;

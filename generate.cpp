@@ -1,7 +1,7 @@
 #include "musicxml.hpp"
-#include <string>
 #include <fstream>
 #include <iostream>
+#include <string>
 
 using namespace std;
 

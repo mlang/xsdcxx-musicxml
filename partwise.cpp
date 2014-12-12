@@ -1,6 +1,6 @@
 #include "musicxml.hpp"
-#include <string>
 #include <iostream>
+#include <string>
 
 #include <xercesc/util/PlatformUtils.hpp>
 

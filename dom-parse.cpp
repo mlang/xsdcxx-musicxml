@@ -3,8 +3,8 @@
 #include <istream>
 
 #include <xercesc/dom/DOM.hpp>
-#include <xercesc/util/XMLUniDefs.hpp> // chLatin_*
 #include <xercesc/framework/Wrapper4InputSource.hpp>
+#include <xercesc/util/XMLUniDefs.hpp> // chLatin_*
 
 #include <xsd/cxx/xml/sax/std-input-source.hxx>
 #include <xsd/cxx/xml/dom/bits/error-handler-proxy.hxx>

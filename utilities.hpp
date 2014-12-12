@@ -10,7 +10,7 @@
 
 #include <xercesc/dom/DOM.hpp>
 
-#include <xsd/cxx/xml/string.hxx>       // xml::transcode
+#include <xsd/cxx/xml/string.hxx> // xml::transcode
 
 #include "dom-parse.hpp"
 
@@ -22,61 +22,54 @@ convert(::musicxml::score_partwise::part_sequence const &ps);
 ::musicxml::score_partwise::part_sequence
 convert(::musicxml::score_timewise::measure_sequence const &ms);
 
-score_timewise
-convert(score_partwise const &pw);
+score_timewise convert(score_partwise const &pw);
 
-score_partwise
-convert(score_timewise const &tw);
+score_partwise convert(score_timewise const &tw);
 
-template<class Score> Score document (std::istream& is, const std::string& id);
+template <class Score> Score document(std::istream &is, const std::string &id);
 
-template<>
-inline score_partwise document<score_partwise>(std::istream& is, const std::string& id)
-{
+template <>
+inline score_partwise document<score_partwise>(std::istream &is,
+                                               const std::string &id) {
   using namespace std;
   using namespace xercesc;
   namespace xml = xsd::cxx::xml;
 
-  unique_ptr<DOMDocument> doc { parse (is, id, true) };
+  unique_ptr<DOMDocument> doc{parse(is, id, true)};
 
-  DOMElement* root (doc->getDocumentElement ());
+  DOMElement *root(doc->getDocumentElement());
 
-  std::string ns (xml::transcode<char> (root->getNamespaceURI ()));
-  std::string name (xml::transcode<char> (root->getLocalName ()));
+  std::string ns(xml::transcode<char>(root->getNamespaceURI()));
+  std::string name(xml::transcode<char>(root->getLocalName()));
 
   if (ns == "") {
     if (name == "score-timewise") {
       return convert(score_timewise(*root));
-    } else if (name == "score-partwise") {
-      return score_partwise(*root);
-    }
+    } else if (name == "score-partwise") { return score_partwise(*root); }
   }
   throw std::runtime_error("Unknown root element '" + name + "'");
 }
 
-template<>
-inline score_timewise document<score_timewise>(std::istream& is, const std::string& id)
-{
+template <>
+inline score_timewise document<score_timewise>(std::istream &is,
+                                               const std::string &id) {
   using namespace std;
   using namespace xercesc;
   namespace xml = xsd::cxx::xml;
 
-  unique_ptr<DOMDocument> doc { parse (is, id, true) };
+  unique_ptr<DOMDocument> doc{parse(is, id, true)};
 
-  DOMElement* root (doc->getDocumentElement ());
+  DOMElement *root(doc->getDocumentElement());
 
-  std::string ns (xml::transcode<char> (root->getNamespaceURI ()));
-  std::string name (xml::transcode<char> (root->getLocalName ()));
+  std::string ns(xml::transcode<char>(root->getNamespaceURI()));
+  std::string name(xml::transcode<char>(root->getLocalName()));
 
   if (ns == "") {
     if (name == "score-partwise") {
       return convert(score_partwise(*root));
-    } else if (name == "score-timewise") {
-      return score_timewise(*root);
-    }
+    } else if (name == "score-timewise") { return score_timewise(*root); }
   }
   throw std::runtime_error("Unknown root element '" + name + "'");
 }
 
 }
-

@@ -28,17 +28,17 @@ note::note(const ::xercesc::DOMElement &e, ::xml_schema::flags f,
            ::xml_schema::container *c)
 : note_base{e, f, c} {}
 
-void note::grace (const grace_type& x) {
+void note::grace(const grace_type &x) {
   this->duration().reset();
   note_base::grace(x);
 }
 
-void note::grace (const grace_optional& x) {
+void note::grace(const grace_optional &x) {
   if (x) this->duration().reset();
   note_base::grace(x);
 }
 
-void note::grace (::std::unique_ptr< grace_type > p) {
+void note::grace(::std::unique_ptr<grace_type> p) {
   if (p) this->duration().reset();
   note_base::grace(std::move(p));
 }
@@ -56,14 +56,19 @@ void operator<<(::xercesc::DOMElement &e, const note &i) {
   using ::xsd::cxx::xml::dom::create_element;
   using ::xsd::cxx::xml::dom::create_attribute;
 
-  if (i.grace()) create_element("grace", e) << *i.grace();
-  else if (i.cue()) create_element("cue", e) << *i.cue();
+  if (i.grace())
+    create_element("grace", e) << *i.grace();
+  else if (i.cue())
+    create_element("cue", e) << *i.cue();
 
   if (i.chord()) create_element("chord", e) << *i.chord();
 
-  if (i.pitch()) create_element("pitch", e) << *i.pitch();
-  else if (i.unpitched()) create_element("unpitched", e) << *i.unpitched();
-  else if (i.rest()) create_element("rest", e) << *i.rest();
+  if (i.pitch())
+    create_element("pitch", e) << *i.pitch();
+  else if (i.unpitched())
+    create_element("unpitched", e) << *i.unpitched();
+  else if (i.rest())
+    create_element("rest", e) << *i.rest();
 
   if (!i.grace().present() && i.duration())
     create_element("duration", e) << *i.duration();
@@ -99,16 +104,19 @@ void operator<<(::xercesc::DOMElement &e, const note &i) {
   if (i.font_size()) create_attribute("font-size", e) << *i.font_size();
   if (i.font_weight()) create_attribute("font-weight", e) << *i.font_weight();
   if (i.color()) create_attribute("color", e) << *i.color();
-  if (i.print_object()) create_attribute("print-object", e) << *i.print_object();
+  if (i.print_object())
+    create_attribute("print-object", e) << *i.print_object();
   if (i.print_dot()) create_attribute("print-dot", e) << *i.print_dot();
-  if (i.print_spacing()) create_attribute("print-spacing", e) << *i.print_spacing();
+  if (i.print_spacing())
+    create_attribute("print-spacing", e) << *i.print_spacing();
   if (i.print_lyric()) create_attribute("print-lyric", e) << *i.print_lyric();
   if (i.dynamics()) create_attribute("dynamics", e) << *i.dynamics();
-  if (i.end_dynamics()) create_attribute("end-dynamics", e) << *i.end_dynamics();
+  if (i.end_dynamics())
+    create_attribute("end-dynamics", e) << *i.end_dynamics();
   if (i.attack()) create_attribute("attack", e) << *i.attack();
   if (i.release()) create_attribute("release", e) << *i.release();
   if (i.time_only()) create_attribute("time-only", e) << *i.time_only();
   if (i.pizzicato()) create_attribute("pizzicato", e) << *i.pizzicato();
 }
 
-}
+} // namespace musicxml

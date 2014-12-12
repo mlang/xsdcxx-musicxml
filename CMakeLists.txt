@@ -45,7 +45,7 @@ set(SOURCES
 add_library(xsdcxx-musicxml STATIC ${SOURCES})
 target_link_libraries(xsdcxx-musicxml ${XERCESC_LIBRARY})
 
-foreach(PROG generate roundtrip)
+foreach(PROG generate partwise timewise)
   add_executable(${PROG} ${PROG}.cpp)
   target_link_libraries(${PROG} xsdcxx-musicxml)
 endforeach(PROG generate roundtrip)

@@ -17,10 +17,7 @@ int main (int argc, char* argv[]) {
 
   try
   {
-    musicxml::score_partwise score {
-      musicxml::document<musicxml::score_partwise> (std::cin, "-")
-    };
-    musicxml::score_partwise_(std::cout, score);
+    musicxml::score_timewise_(std::cout, musicxml::document<musicxml::score_timewise> (std::cin, "-"));
   } catch (const xml_schema::exception& e) {
     cerr << e << endl;
     r = EXIT_FAILURE;

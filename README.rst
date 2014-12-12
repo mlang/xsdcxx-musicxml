@@ -18,9 +18,11 @@ To use this library in your program,
 
 and link with the xsdcxx-musicxml library.
 
+You can also use the CMake ADD_SUBDIRECTORY command to directly
+include this library as a subproject in your CMake based project.
+
 Known Problems
 --------------
 
 * Serialisation crashes clang.
-* partwise/timewise transformation not implemented yet.
 

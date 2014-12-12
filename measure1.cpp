@@ -190,9 +190,7 @@ measure1 &measure1::operator=(const measure1 &x) {
 }
 
 measure1::~measure1() {}
-} // namespace musicxml
 
-namespace musicxml {
 void operator<<(::xercesc::DOMElement &e, const measure1 &i) {
   e << static_cast<const ::xml_schema::type &>(i);
 
@@ -200,38 +198,19 @@ void operator<<(::xercesc::DOMElement &e, const measure1 &i) {
   std::for_each(i.music_data().begin(), i.music_data().end(),
                 boost::apply_visitor(v));
 
-  // number
-  //
-  {
-    ::xercesc::DOMAttr &a(::xsd::cxx::xml::dom::create_attribute("number", e));
+  ::xsd::cxx::xml::dom::create_attribute("number", e) << i.number();
 
-    a << i.number();
-  }
-
-  // implicit
-  //
   if (i.implicit()) {
-    ::xercesc::DOMAttr &a(
-      ::xsd::cxx::xml::dom::create_attribute("implicit", e));
-
-    a << *i.implicit();
+    ::xsd::cxx::xml::dom::create_attribute("implicit", e) << *i.implicit();
   }
 
-  // non-controlling
-  //
   if (i.non_controlling()) {
-    ::xercesc::DOMAttr &a(
-      ::xsd::cxx::xml::dom::create_attribute("non-controlling", e));
-
-    a << *i.non_controlling();
+    ::xsd::cxx::xml::dom::create_attribute("non-controlling", e) << *i.non_controlling();
   }
 
-  // width
-  //
   if (i.width()) {
-    ::xercesc::DOMAttr &a(::xsd::cxx::xml::dom::create_attribute("width", e));
-
-    a << *i.width();
+    ::xsd::cxx::xml::dom::create_attribute("width", e) << *i.width();
   }
 }
+
 } // namespace musicxml

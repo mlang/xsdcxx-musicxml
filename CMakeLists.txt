@@ -38,7 +38,7 @@ add_custom_command(
 )
 
 set(SOURCES
-    dom-parse.cpp note.cpp measure1.cpp part1.cpp
+    dom-parse.cpp note.cpp measure1.cpp part1.cpp utilities.cpp
     musicxml-0.cpp musicxml-1.cpp musicxml-2.cpp musicxml-3.cpp
     xlink.cpp xml.cpp
 )

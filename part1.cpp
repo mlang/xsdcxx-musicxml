@@ -4,6 +4,7 @@
 #include <xsd/cxx/xml/dom/parsing-source.hxx>
 
 namespace musicxml {
+
 const part1::id_type &part1::id() const { return this->id_.get(); }
 
 part1::id_type &part1::id() { return this->id_.get(); }
@@ -111,12 +112,7 @@ void operator<<(::xercesc::DOMElement &e, const part1 &i) {
   std::for_each(i.music_data().begin(), i.music_data().end(),
                 boost::apply_visitor(v));
 
-  // id
-  //
-  {
-    ::xercesc::DOMAttr &a(::xsd::cxx::xml::dom::create_attribute("id", e));
-
-    a << i.id();
-  }
+  ::xsd::cxx::xml::dom::create_attribute("id", e) << i.id();
 }
+
 } // namespace musicxml

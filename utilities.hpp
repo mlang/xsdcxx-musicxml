@@ -16,6 +16,18 @@
 
 namespace musicxml {
 
+::musicxml::score_timewise::measure_sequence
+convert(::musicxml::score_partwise::part_sequence const &ps);
+
+::musicxml::score_partwise::part_sequence
+convert(::musicxml::score_timewise::measure_sequence const &ms);
+
+score_timewise
+convert(score_partwise const &pw);
+
+score_partwise
+convert(score_timewise const &tw);
+
 template<class Score> Score document (std::istream& is, const std::string& id);
 
 template<>
@@ -34,9 +46,9 @@ inline score_partwise document<score_partwise>(std::istream& is, const std::stri
 
   if (ns == "") {
     if (name == "score-timewise") {
-      throw std::runtime_error("MusicXML format conversion unimplemeneted.");
+      return convert(score_timewise(*root));
     } else if (name == "score-partwise") {
-      return *root;
+      return score_partwise(*root);
     }
   }
   throw std::runtime_error("Unknown root element '" + name + "'");
@@ -58,9 +70,9 @@ inline score_timewise document<score_timewise>(std::istream& is, const std::stri
 
   if (ns == "") {
     if (name == "score-partwise") {
-      throw std::runtime_error("MusicXML format conversion unimplemeneted.");
+      return convert(score_partwise(*root));
     } else if (name == "score-timewise") {
-      return *root;
+      return score_timewise(*root);
     }
   }
   throw std::runtime_error("Unknown root element '" + name + "'");

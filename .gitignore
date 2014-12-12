@@ -7,7 +7,7 @@ generate
 libxsdcxx-musicxml.a
 musicxml.hpp
 musicxml-*.cpp
-partiwse
+partwise
 timewise
 xlink.cpp
 xlink.hpp

@@ -79,4 +79,5 @@ inline void serialize(::std::ostream &os, ::musicxml::score_partwise const &s) {
 inline void serialize(::std::ostream &os, ::musicxml::score_timewise const &s) {
   score_timewise_(os, s);
 }
+
 }

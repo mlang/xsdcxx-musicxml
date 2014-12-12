@@ -6,7 +6,7 @@ add_definitions(-std=c++11)
 find_package(XSDCXX REQUIRED)
 set(XSDCXX_FLAGS cxx-tree
     --output-dir ${PROJECT_BINARY_DIR}
-    --std c++11 --cxx-suffix .cpp --hxx-suffix .hpp
+    --std c++11 --cxx-suffix .cpp --hxx-suffix .hpp --ixx-suffix .ipp
     --generate-inline --generate-serialization
 )
 

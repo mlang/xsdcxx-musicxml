@@ -6,10 +6,13 @@ compile_commands.json
 generate
 libxsdcxx-musicxml.a
 musicxml.hpp
+musicxml.ipp
 musicxml-*.cpp
 partwise
 timewise
 xlink.cpp
 xlink.hpp
+xlink.ipp
 xml.cpp
 xml.hpp
+xml.ipp

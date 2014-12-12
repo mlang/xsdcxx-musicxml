@@ -7,7 +7,7 @@ find_package(XSDCXX REQUIRED)
 set(XSDCXX_FLAGS cxx-tree
     --output-dir ${PROJECT_BINARY_DIR}
     --std c++11 --cxx-suffix .cpp --hxx-suffix .hpp
-    --generate-ostream --generate-serialization
+    --generate-serialization
 )
 
 # Generate bindings from XSD files:
@@ -27,7 +27,7 @@ add_custom_command(
          ${PROJECT_BINARY_DIR}/musicxml.hpp
   COMMAND ${XSDCXX_EXECUTABLE} ${XSDCXX_FLAGS} --generate-doxygen
     --namespace-map =musicxml --location-regex '%http://.+/\(.+\)%$$1%'
-    --root-element-all --ordered-type part1
+    --root-element-all
     --custom-type note=/note_base --hxx-epilogue '\#include \"note.hpp\"'
     --custom-type measure1= --hxx-epilogue '\#include \"measure1.hpp\"'
     --custom-type part1= --hxx-epilogue '\#include \"part1.hpp\"'

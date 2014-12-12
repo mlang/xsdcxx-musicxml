@@ -7,7 +7,7 @@ find_package(XSDCXX REQUIRED)
 set(XSDCXX_FLAGS cxx-tree
     --output-dir ${PROJECT_BINARY_DIR}
     --std c++11 --cxx-suffix .cpp --hxx-suffix .hpp
-    --generate-serialization
+    --generate-inline --generate-serialization
 )
 
 # Generate bindings from XSD files:

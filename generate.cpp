@@ -48,7 +48,7 @@ int main (int argc, char* argv[]) {
       measure.music_data().push_back(note);
     }
 
-    musicxml::score_partwise_(std::cout, score);
+    musicxml::serialize(std::cout, score);
   } catch (const xml_schema::exception& e) {
     cerr << e << endl;
     r = EXIT_FAILURE;

@@ -26,16 +26,16 @@ score_timewise convert(score_partwise const &pw);
 
 score_partwise convert(score_timewise const &tw);
 
-template <class Score> Score document(std::istream &is, const std::string &id);
+template <class Score> Score parse(std::istream &, const std::string &id);
 
 template <>
-inline score_partwise document<score_partwise>(std::istream &is,
-                                               const std::string &id) {
+inline score_partwise parse<score_partwise>(std::istream &is,
+                                            const std::string &id) {
   using namespace std;
   using namespace xercesc;
   namespace xml = xsd::cxx::xml;
 
-  unique_ptr<DOMDocument> doc{parse(is, id, true)};
+  unique_ptr<DOMDocument> doc{dom::parse(is, id, true)};
 
   DOMElement *root(doc->getDocumentElement());
 
@@ -51,13 +51,13 @@ inline score_partwise document<score_partwise>(std::istream &is,
 }
 
 template <>
-inline score_timewise document<score_timewise>(std::istream &is,
-                                               const std::string &id) {
+inline score_timewise parse<score_timewise>(std::istream &is,
+                                            const std::string &id) {
   using namespace std;
   using namespace xercesc;
   namespace xml = xsd::cxx::xml;
 
-  unique_ptr<DOMDocument> doc{parse(is, id, true)};
+  unique_ptr<DOMDocument> doc{dom::parse(is, id, true)};
 
   DOMElement *root(doc->getDocumentElement());
 
@@ -72,4 +72,11 @@ inline score_timewise document<score_timewise>(std::istream &is,
   throw std::runtime_error("Unknown root element '" + name + "'");
 }
 
+inline void serialize(::std::ostream &os, ::musicxml::score_partwise const &s) {
+  score_partwise_(os, s);
+}
+
+inline void serialize(::std::ostream &os, ::musicxml::score_timewise const &s) {
+  score_timewise_(os, s);
+}
 }

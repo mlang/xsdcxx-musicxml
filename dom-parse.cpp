@@ -17,73 +17,70 @@ namespace xml = xsd::cxx::xml;
 namespace tree = xsd::cxx::tree;
 
 std::unique_ptr<DOMDocument>
-parse (std::istream& is, const std::string& id, bool validate)
-{
-  static const XMLCh ls_id [] = {chLatin_L, chLatin_S, chNull};
+musicxml::dom::parse(std::istream &is, const std::string &id, bool validate) {
+  static const XMLCh ls_id[] = {chLatin_L, chLatin_S, chNull};
 
-  DOMImplementation* impl {
-    DOMImplementationRegistry::getDOMImplementation (ls_id)
-  };
+  DOMImplementation *impl{
+    DOMImplementationRegistry::getDOMImplementation(ls_id)};
 
-  std::unique_ptr<DOMLSParser> parser {
-    impl->createLSParser (DOMImplementationLS::MODE_SYNCHRONOUS, nullptr)
-  };
+  std::unique_ptr<DOMLSParser> parser{
+    impl->createLSParser(DOMImplementationLS::MODE_SYNCHRONOUS, nullptr)};
 
-  DOMConfiguration* conf { parser->getDomConfig () };
+  DOMConfiguration *conf{parser->getDomConfig()};
 
   // Discard comment nodes in the document.
-  conf->setParameter (XMLUni::fgDOMComments, false);
+  conf->setParameter(XMLUni::fgDOMComments, false);
 
   // Enable datatype normalization.
-  conf->setParameter (XMLUni::fgDOMDatatypeNormalization, true);
+  conf->setParameter(XMLUni::fgDOMDatatypeNormalization, true);
 
   // Do not create EntityReference nodes in the DOM tree. No
   // EntityReference nodes will be created, only the nodes
   // corresponding to their fully expanded substitution text
   // will be created.
-  conf->setParameter (XMLUni::fgDOMEntities, false);
+  conf->setParameter(XMLUni::fgDOMEntities, false);
 
   // Perform namespace processing.
-  conf->setParameter (XMLUni::fgDOMNamespaces, true);
+  conf->setParameter(XMLUni::fgDOMNamespaces, true);
 
   // Do not include ignorable whitespace in the DOM tree.
-  conf->setParameter (XMLUni::fgDOMElementContentWhitespace, false);
+  conf->setParameter(XMLUni::fgDOMElementContentWhitespace, false);
 
   // Enable/Disable validation.
-  conf->setParameter (XMLUni::fgDOMValidate, validate);
-  conf->setParameter (XMLUni::fgXercesSchema, validate);
-  conf->setParameter (XMLUni::fgXercesSchemaFullChecking, false);
+  conf->setParameter(XMLUni::fgDOMValidate, validate);
+  conf->setParameter(XMLUni::fgXercesSchema, validate);
+  conf->setParameter(XMLUni::fgXercesSchemaFullChecking, false);
 
   if (validate) {
     // If the input document does not specify a DTD (which would be atypical
     // for MusicXML, but could still happen), validation is going to fail
     // if we do not specify a schema manually.
-    xml::string schemaLoc { "musicxml.xsd" };
-    conf->setParameter (XMLUni::fgXercesSchemaExternalNoNameSpaceSchemaLocation,
-                        schemaLoc.c_str());
+    xml::string schemaLoc{"musicxml.xsd"};
+    conf->setParameter(XMLUni::fgXercesSchemaExternalNoNameSpaceSchemaLocation,
+                       schemaLoc.c_str());
   }
 
-  // Xerces-C++ 3.1.0 is the first version with working multi import
-  // support.
+// Xerces-C++ 3.1.0 is the first version with working multi import
+// support.
 #if _XERCES_VERSION >= 30100
-  conf->setParameter (XMLUni::fgXercesHandleMultipleImports, true);
+  conf->setParameter(XMLUni::fgXercesHandleMultipleImports, true);
 #endif
 
   // We will release the DOM document ourselves.
-  conf->setParameter (XMLUni::fgXercesUserAdoptsDOMDocument, true);
+  conf->setParameter(XMLUni::fgXercesUserAdoptsDOMDocument, true);
 
   // Set error handler.
   tree::error_handler<char> eh;
-  xml::dom::bits::error_handler_proxy<char> ehp { eh };
-  conf->setParameter (XMLUni::fgDOMErrorHandler, &ehp);
+  xml::dom::bits::error_handler_proxy<char> ehp{eh};
+  conf->setParameter(XMLUni::fgDOMErrorHandler, &ehp);
 
   // Prepare input stream.
-  xml::sax::std_input_source isrc (is, id);
-  Wrapper4InputSource wrap { &isrc, false };
+  xml::sax::std_input_source isrc(is, id);
+  Wrapper4InputSource wrap{&isrc, false};
 
-  std::unique_ptr<DOMDocument> doc { parser->parse (&wrap) };
+  std::unique_ptr<DOMDocument> doc{parser->parse(&wrap)};
 
-  eh.throw_if_failed<tree::parsing<char>> ();
+  eh.throw_if_failed<tree::parsing<char>>();
 
   return doc;
 }

@@ -7,11 +7,17 @@
 #include <xercesc/dom/DOMDocument.hpp>
 #include <memory>
 
+namespace musicxml {
+namespace dom {
+
 // Parse an XML document from the standard input stream with an
 // optional resource id. Resource id is used in diagnostics as
 // well as to locate schemas referenced from inside the document.
 //
 std::unique_ptr<xercesc::DOMDocument>
-parse (std::istream& is, const std::string& id, bool validate);
+parse(std::istream &is, const std::string &id, bool validate);
+
+} // namespace dom
+} // namespace musicxml
 
 #endif // DOM_PARSE

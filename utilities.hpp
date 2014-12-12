@@ -16,15 +16,8 @@
 
 namespace musicxml {
 
-::musicxml::score_timewise::measure_sequence
-convert(::musicxml::score_partwise::part_sequence const &ps);
-
-::musicxml::score_partwise::part_sequence
-convert(::musicxml::score_timewise::measure_sequence const &ms);
-
-score_timewise convert(score_partwise const &pw);
-
-score_partwise convert(score_timewise const &tw);
+score_timewise convert(score_partwise const &);
+score_partwise convert(score_timewise const &);
 
 template <class Score> Score parse(std::istream &, const std::string &id);
 
@@ -47,7 +40,9 @@ inline score_partwise parse<score_partwise>(std::istream &is,
       return convert(score_timewise(*root));
     } else if (name == "score-partwise") { return score_partwise(*root); }
   }
-  throw std::runtime_error("Unknown root element '" + name + "'");
+
+  throw ::xsd::cxx::tree::unexpected_element<char>(
+    name, ns, "score-partwise|score-timewise", "");
 }
 
 template <>
@@ -69,15 +64,19 @@ inline score_timewise parse<score_timewise>(std::istream &is,
       return convert(score_partwise(*root));
     } else if (name == "score-timewise") { return score_timewise(*root); }
   }
-  throw std::runtime_error("Unknown root element '" + name + "'");
+
+  throw ::xsd::cxx::tree::unexpected_element<char>(
+    name, ns, "score-partwise|score-timewise", "");
 }
 
-inline void serialize(::std::ostream &os, ::musicxml::score_partwise const &s) {
+score_timewise::measure_sequence convert(score_partwise::part_sequence const &);
+score_partwise::part_sequence convert(score_timewise::measure_sequence const &);
+
+inline void serialize(::std::ostream &os, score_partwise const &s) {
   score_partwise_(os, s);
 }
 
-inline void serialize(::std::ostream &os, ::musicxml::score_timewise const &s) {
+inline void serialize(::std::ostream &os, score_timewise const &s) {
   score_timewise_(os, s);
 }
-
 }

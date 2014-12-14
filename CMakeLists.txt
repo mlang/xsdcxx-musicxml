@@ -37,15 +37,44 @@ add_custom_command(
   DEPENDS ${CMAKE_SOURCE_DIR}/musicxml.xsd
 )
 
+set(SCHEMAS musicxml.xsd xml.xsd xlink.xsd)
 set(SOURCES
     note.cpp measure1.cpp part1.cpp utilities.cpp
     musicxml-0.cpp musicxml-1.cpp musicxml-2.cpp musicxml-3.cpp
     xlink.cpp xml.cpp
 )
-add_library(xsdcxx-musicxml STATIC ${SOURCES})
-target_link_libraries(xsdcxx-musicxml ${XERCESC_LIBRARY})
+set(HEADERS
+    musicxml.hpp
+    note.hpp part1.hpp measure1.hpp utilities.hpp
+    xml.hpp xlink.hpp
+    musicxml.ipp xml.ipp xlink.ipp
+)
 
+add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
+target_link_libraries(${PROJECT_NAME} ${XERCESC_LIBRARY})
+set_target_properties(${PROJECT_NAME} PROPERTIES
+  SOVERSION 0
+  VERSION 0.1
+  PUBLIC_HEADER "${HEADERS}"
+  RESOURCE "${SCHEMAS}"
+)
+add_library(${PROJECT_NAME}-static STATIC ${SOURCES} ${HEADERS})
+target_link_libraries(${PROJECT_NAME}-static ${XERCESC_LIBRARY})
+set_target_properties(${PROJECT_NAME}-static PROPERTIES
+  VERSION 0.1
+  PUBLIC_HEADER "${HEADERS}"
+  RESOURCE "${SCHEMAS}"
+)
 foreach(PROG generate partwise timewise)
   add_executable(${PROG} ${PROG}.cpp)
-  target_link_libraries(${PROG} xsdcxx-musicxml)
+  target_link_libraries(${PROG} ${PROJECT_NAME})
 endforeach(PROG generate partwise timewise)
+
+install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}-static
+  EXPORT ${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  PUBLIC_HEADER DESTINATION include/${PROJECT_NAME}
+  RESOURCE DESTINATION share/${PROJECT_NAME}
+)
+install(EXPORT ${PROJECT_NAME} DESTINATION share/${PROJECT_NAME})

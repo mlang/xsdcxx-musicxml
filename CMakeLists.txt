@@ -40,16 +40,28 @@ add_custom_command(
 set(SCHEMAS musicxml.xsd xml.xsd xlink.xsd)
 set(SOURCES
     note.cpp measure1.cpp part1.cpp utilities.cpp
-    musicxml-0.cpp musicxml-1.cpp musicxml-2.cpp musicxml-3.cpp
-    xlink.cpp xml.cpp
+    ${PROJECT_BINARY_DIR}/musicxml-0.cpp
+    ${PROJECT_BINARY_DIR}/musicxml-1.cpp
+    ${PROJECT_BINARY_DIR}/musicxml-2.cpp
+    ${PROJECT_BINARY_DIR}/musicxml-3.cpp
+    ${PROJECT_BINARY_DIR}/xlink.cpp
+    ${PROJECT_BINARY_DIR}/xml.cpp
 )
 set(HEADERS
-    musicxml.hpp
     note.hpp part1.hpp measure1.hpp utilities.hpp
-    xml.hpp xlink.hpp
-    musicxml.ipp xml.ipp xlink.ipp
+    ${PROJECT_BINARY_DIR}/musicxml.hpp
+    ${PROJECT_BINARY_DIR}/xml.hpp ${PROJECT_BINARY_DIR}/xlink.hpp
+    ${PROJECT_BINARY_DIR}/musicxml.ipp
+    ${PROJECT_BINARY_DIR}/xml.ipp
+    ${PROJECT_BINARY_DIR}/xlink.ipp
 )
 
+add_definitions(-DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}")
+
+include_directories(
+  ${PROJECT_BINARY_DIR}
+  ${XERCESC_INCLUDE_DIR} ${XSDCXX_INCLUDE_DIR}
+)
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
 target_link_libraries(${PROJECT_NAME} ${XERCESC_LIBRARY})
 set_target_properties(${PROJECT_NAME} PROPERTIES

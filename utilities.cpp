@@ -102,7 +102,7 @@ dom_document(std::istream &is, const std::string &id, bool validate) {
     // If the input document does not specify a DTD (which would be atypical
     // for MusicXML, but could still happen), validation is going to fail
     // if we do not specify a schema manually.
-    xml::string schemaLoc { "musicxml.xsd" };
+    xml::string schemaLoc { "file://" CMAKE_INSTALL_PREFIX "/share/xsdcxx-musicxml/musicxml.xsd" };
     conf->setParameter(XMLUni::fgXercesSchemaExternalNoNameSpaceSchemaLocation,
                        schemaLoc.c_str());
   }

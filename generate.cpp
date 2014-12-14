@@ -8,8 +8,7 @@ using namespace std;
 int main (int argc, char* argv[]) {
   int r = EXIT_SUCCESS;
 
-  try
-  {
+  try {
     using score_type = musicxml::score_partwise;
     using part_type = score_type::part_type;
     using measure_type = part_type::measure_type;

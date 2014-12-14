@@ -25,6 +25,11 @@
 
 #include "musicxml.hpp"
 
+#include <xsd/cxx/xml/dom/serialization-source.hxx>
+#include <xsd/cxx/xml/dom/bits/error-handler-proxy.hxx>
+#include <xsd/cxx/tree/error-handler.hxx>
+#include <xsd/cxx/tree/exceptions.hxx>
+
 musicxml::score_timewise::measure_sequence
 musicxml::convert(musicxml::score_partwise::part_sequence const &ps) {
   musicxml::score_timewise::measure_sequence ms;
@@ -112,4 +117,95 @@ musicxml::score_partwise musicxml::convert(musicxml::score_timewise const &tw) {
   pw.part(convert(tw.measure()));
 
   return pw;
+}
+
+static const XMLCh ls_id[] = {xercesc::chLatin_L, xercesc::chLatin_S,
+                              xercesc::chNull};
+
+void musicxml::serialize(::std::ostream &os,
+                         musicxml::score_partwise const &s) {
+  using namespace xercesc;
+  namespace xml = xsd::cxx::xml;
+
+  xml::auto_initializer xerces_platform(true, false);
+
+  DOMImplementation *dom{
+    DOMImplementationRegistry::getDOMImplementation(ls_id)};
+
+  xml::string score_type("score-partwise");
+  xml::string dtd_public("-//Recordare//DTD MusicXML " + s.version() +
+                         " Partwise//EN");
+  xml::string dtd_system("http://www.musicxml.org/dtds/partwise.dtd");
+
+  std::unique_ptr<DOMDocument> doc{dom->createDocument(
+    nullptr, score_type.c_str(),
+    dom->createDocumentType(score_type.c_str(), dtd_public.c_str(),
+                            dtd_system.c_str()))};
+
+  musicxml::score_partwise_(*doc, s);
+
+  xsd::cxx::tree::error_handler<char> eh;
+  xml::dom::bits::error_handler_proxy<char> ehp(eh);
+
+  xml::dom::ostream_format_target oft(os);
+
+  std::unique_ptr<DOMLSSerializer> writer{dom->createLSSerializer()};
+
+  DOMConfiguration *conf{writer->getDomConfig()};
+
+  conf->setParameter(XMLUni::fgDOMErrorHandler, &ehp);
+  conf->setParameter(XMLUni::fgDOMWRTDiscardDefaultContent, true);
+  conf->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true);
+
+  std::unique_ptr<DOMLSOutput> output{dom->createLSOutput()};
+  output->setEncoding(xml::string("UTF-8").c_str());
+  output->setByteStream(&oft);
+
+  writer->write(doc.get(), output.get());
+
+  eh.throw_if_failed<xsd::cxx::tree::serialization<char>>();
+}
+
+void musicxml::serialize(::std::ostream &os,
+                         musicxml::score_timewise const &s) {
+  using namespace xercesc;
+  namespace xml = xsd::cxx::xml;
+
+  xml::auto_initializer xerces_platform(true, false);
+
+  DOMImplementation *dom{
+    DOMImplementationRegistry::getDOMImplementation(ls_id)};
+
+  xml::string score_type("score-timewise");
+  xml::string dtd_public("-//Recordare//DTD MusicXML " + s.version() +
+                         " Timewise//EN");
+  xml::string dtd_system("http://www.musicxml.org/dtds/timewise.dtd");
+
+  std::unique_ptr<DOMDocument> doc{dom->createDocument(
+    nullptr, score_type.c_str(),
+    dom->createDocumentType(score_type.c_str(), dtd_public.c_str(),
+                            dtd_system.c_str()))};
+
+  musicxml::score_timewise_(*doc, s);
+
+  xsd::cxx::tree::error_handler<char> eh;
+  xml::dom::bits::error_handler_proxy<char> ehp(eh);
+
+  xml::dom::ostream_format_target oft(os);
+
+  std::unique_ptr<DOMLSSerializer> writer{dom->createLSSerializer()};
+
+  DOMConfiguration *conf{writer->getDomConfig()};
+
+  conf->setParameter(XMLUni::fgDOMErrorHandler, &ehp);
+  conf->setParameter(XMLUni::fgDOMWRTDiscardDefaultContent, true);
+  conf->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true);
+
+  std::unique_ptr<DOMLSOutput> output{dom->createLSOutput()};
+  output->setEncoding(xml::string("UTF-8").c_str());
+  output->setByteStream(&oft);
+
+  writer->write(doc.get(), output.get());
+
+  eh.throw_if_failed<xsd::cxx::tree::serialization<char>>();
 }

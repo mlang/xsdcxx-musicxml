@@ -97,11 +97,7 @@ inline score_timewise parse<score_timewise>(std::istream &is,
 score_timewise::measure_sequence convert(score_partwise::part_sequence const &);
 score_partwise::part_sequence convert(score_timewise::measure_sequence const &);
 
-inline void serialize(::std::ostream &os, score_partwise const &s) {
-  score_partwise_(os, s);
-}
+void serialize(::std::ostream &os, score_partwise const &s);
 
-inline void serialize(::std::ostream &os, score_timewise const &s) {
-  score_timewise_(os, s);
-}
+void serialize(::std::ostream &os, score_timewise const &s);
 }

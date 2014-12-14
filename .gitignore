@@ -4,7 +4,10 @@ Makefile
 cmake_install.cmake
 compile_commands.json
 generate
-libxsdcxx-musicxml.a
+libxsdcxx-musicxml.so
+libxsdcxx-musicxml.so.0
+libxsdcxx-musicxml.so.0.1
+libxsdcxx-musicxml-static.a
 musicxml.hpp
 musicxml.ipp
 musicxml-*.cpp

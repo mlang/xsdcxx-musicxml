@@ -11,6 +11,8 @@ uniform way.  Client code is free to work with either of the two object models,
 and MusicXML documents are automatically converted to the requested format
 during parsing.
 
+.. code-block:: c++
+
     auto timewise = musicxml::parse<musicxml::score_timewise>(std::cin, "-");
     for (auto &measure: timewise.measure()) {
       for (auto &part: measure.part()) {
@@ -20,6 +22,8 @@ during parsing.
     musicxml::serialize(std::cout, timewise);
 
 or
+
+.. code-block:: c++
 
     auto partwise = musicxml::parse<musicxml::score_partwise>(std::cin, "-");
     for (auto &part: partwise.part()) {
@@ -32,15 +36,16 @@ or
 Alternatively, if you want to save to a different format as you have worked with,
 you can use the musicxml::convert function to flip formats:
 
+.. code-block:: c++
+
     // Serialize a score-partwise document.
     musicxml::serialize(std::cout, musicxml::convert(timewise));
     
-Both, musicxml::score_partwise::part_type::measure_type and
-musicxml::score_timewise::measure_type::part_type use boost::variant to store the
+Both, `musicxml::score_partwise::part_type::measure_type` and
+`musicxml::score_timewise::measure_type::part_type` use `boost::variant` to store the
 different allowed element types in a heterogeneous container.  This container
-can be accessed and set with the music_data() accessors, and its type
-is available as member type music_data_sequence.
-
+can be accessed and set with the `music_data()` accessors, and its type
+is available as member type `music_data_sequence`.
 
 Building
 --------
@@ -49,7 +54,7 @@ CMake and XSDCXX are required to build this library.
 
 See generate.cpp, partiwse.cpp and timewise.cpp for very simple usage examples.
 
-To use this library in your program,
+To use this library in your project,
 
     #include "xsdcxx-musicxml/musicxml.hpp"
 

@@ -2,13 +2,8 @@
 #include <iostream>
 #include <string>
 
-#include <xercesc/util/PlatformUtils.hpp>
-
 int main(int argc, char *argv[]) {
   int r = EXIT_SUCCESS;
-
-  // We need to initialize the Xerces-C++ runtime for musicxml::parse to work.
-  xercesc::XMLPlatformUtils::Initialize();
 
   try {
     musicxml::serialize(
@@ -20,8 +15,6 @@ int main(int argc, char *argv[]) {
     std::cerr << argv[1] << ": unable to open or read failure" << std::endl;
     r = EXIT_FAILURE;
   }
-
-  xercesc::XMLPlatformUtils::Terminate();
 
   return r;
 }

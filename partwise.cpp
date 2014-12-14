@@ -2,15 +2,8 @@
 #include <iostream>
 #include <string>
 
-#include <xercesc/util/PlatformUtils.hpp>
-
 int main(int argc, char *argv[]) {
   int r = EXIT_SUCCESS;
-
-  // We need to initialize the Xerces-C++ runtime because we
-  // are doing the XML-to-DOM parsing ourselves.
-  //
-  xercesc::XMLPlatformUtils::Initialize();
 
   try {
     musicxml::serialize(
@@ -23,6 +16,5 @@ int main(int argc, char *argv[]) {
     r = EXIT_FAILURE;
   }
 
-  xercesc::XMLPlatformUtils::Terminate();
   return r;
 }

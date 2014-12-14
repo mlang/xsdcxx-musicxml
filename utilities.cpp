@@ -26,9 +26,159 @@
 #include "musicxml.hpp"
 
 #include <xsd/cxx/xml/dom/serialization-source.hxx>
-#include <xsd/cxx/xml/dom/bits/error-handler-proxy.hxx>
 #include <xsd/cxx/tree/error-handler.hxx>
 #include <xsd/cxx/tree/exceptions.hxx>
+#include <xsd/cxx/xml/dom/bits/error-handler-proxy.hxx>
+
+#include <istream>
+
+#include <xercesc/dom/DOM.hpp>
+#include <xercesc/framework/Wrapper4InputSource.hpp>
+#include <xercesc/util/XMLUniDefs.hpp> // chLatin_*
+
+#include <xsd/cxx/xml/sax/std-input-source.hxx>
+#include <xsd/cxx/xml/dom/bits/error-handler-proxy.hxx>
+
+using std::istream;
+using std::ostream;
+using std::unique_ptr;
+using xercesc::chLatin_L;
+using xercesc::chLatin_S;
+using xercesc::chNull;
+using xercesc::DOMConfiguration;
+using xercesc::DOMDocument;
+using xercesc::DOMDocumentType;
+using xercesc::DOMElement;
+using xercesc::DOMImplementation;
+using xercesc::DOMImplementationLS;
+using xercesc::DOMImplementationRegistry;
+using xercesc::DOMLSOutput;
+using xercesc::DOMLSParser;
+using xercesc::DOMLSSerializer;
+using xercesc::Wrapper4InputSource;
+using xercesc::XMLUni;
+
+namespace xml = xsd::cxx::xml;
+namespace tree = xsd::cxx::tree;
+
+static const XMLCh ls_id[] = {chLatin_L, chLatin_S, chNull};
+
+static std::unique_ptr<DOMDocument>
+dom_document(std::istream &is, const std::string &id, bool validate) {
+  DOMImplementation *dom {
+    DOMImplementationRegistry::getDOMImplementation(ls_id)
+  };
+
+  std::unique_ptr<DOMLSParser> parser {
+    dom->createLSParser(DOMImplementationLS::MODE_SYNCHRONOUS, nullptr)
+  };
+
+  DOMConfiguration *conf { parser->getDomConfig() };
+
+  // Discard comment nodes in the document.
+  conf->setParameter(XMLUni::fgDOMComments, false);
+
+  // Enable datatype normalization.
+  conf->setParameter(XMLUni::fgDOMDatatypeNormalization, true);
+
+  // Do not create EntityReference nodes in the DOM tree. No
+  // EntityReference nodes will be created, only the nodes
+  // corresponding to their fully expanded substitution text
+  // will be created.
+  conf->setParameter(XMLUni::fgDOMEntities, false);
+
+  // Perform namespace processing.
+  conf->setParameter(XMLUni::fgDOMNamespaces, true);
+
+  // Do not include ignorable whitespace in the DOM tree.
+  conf->setParameter(XMLUni::fgDOMElementContentWhitespace, false);
+
+  // Enable/Disable validation.
+  conf->setParameter(XMLUni::fgDOMValidate, validate);
+  conf->setParameter(XMLUni::fgXercesSchema, validate);
+  conf->setParameter(XMLUni::fgXercesSchemaFullChecking, false);
+
+  if (validate) {
+    // If the input document does not specify a DTD (which would be atypical
+    // for MusicXML, but could still happen), validation is going to fail
+    // if we do not specify a schema manually.
+    xml::string schemaLoc { "musicxml.xsd" };
+    conf->setParameter(XMLUni::fgXercesSchemaExternalNoNameSpaceSchemaLocation,
+                       schemaLoc.c_str());
+  }
+
+// Xerces-C++ 3.1.0 is the first version with working multi import
+// support.
+#if _XERCES_VERSION >= 30100
+  conf->setParameter(XMLUni::fgXercesHandleMultipleImports, true);
+#endif
+
+  // We will release the DOM document ourselves.
+  conf->setParameter(XMLUni::fgXercesUserAdoptsDOMDocument, true);
+
+  // Set error handler.
+  tree::error_handler<char> eh;
+  xml::dom::bits::error_handler_proxy<char> ehp { eh };
+  conf->setParameter(XMLUni::fgDOMErrorHandler, &ehp);
+
+  // Prepare input stream.
+  xml::sax::std_input_source isrc { is, id };
+  Wrapper4InputSource wrap { &isrc, false };
+
+  std::unique_ptr<DOMDocument> doc { parser->parse(&wrap) };
+
+  eh.throw_if_failed<tree::parsing<char>>();
+
+  return doc;
+}
+
+template <>
+musicxml::score_partwise
+musicxml::parse<musicxml::score_partwise>(std::istream &is,
+                                          const std::string &id) {
+  xml::auto_initializer xerces_platform { true, false };
+
+  std::unique_ptr<DOMDocument> doc { dom_document(is, id, true) };
+  DOMElement *root { doc->getDocumentElement() };
+
+  std::string const ns { xml::transcode<char>(root->getNamespaceURI()) };
+  std::string const name { xml::transcode<char>(root->getLocalName()) };
+
+  if (ns == "") {
+    if (name == "score-timewise") {
+      return musicxml::convert(musicxml::score_timewise{*root});
+    } else if (name == "score-partwise") {
+      return musicxml::score_partwise{*root};
+    }
+  }
+
+  throw tree::unexpected_element<char>(name, ns,
+                                       "score-partwise|score-timewise", "");
+}
+
+template <>
+musicxml::score_timewise
+musicxml::parse<musicxml::score_timewise>(std::istream &is,
+                                          const std::string &id) {
+  xml::auto_initializer xerces_platform { true, false };
+
+  std::unique_ptr<DOMDocument> doc { dom_document(is, id, true) };
+  DOMElement *root { doc->getDocumentElement() };
+
+  std::string const ns { xml::transcode<char>(root->getNamespaceURI()) };
+  std::string const name { xml::transcode<char>(root->getLocalName()) };
+
+  if (ns == "") {
+    if (name == "score-partwise") {
+      return musicxml::convert(musicxml::score_partwise{*root});
+    } else if (name == "score-timewise") {
+      return musicxml::score_timewise{*root};
+    }
+  }
+
+  throw tree::unexpected_element<char>(name, ns,
+                                       "score-partwise|score-timewise", "");
+}
 
 musicxml::score_timewise::measure_sequence
 musicxml::convert(musicxml::score_partwise::part_sequence const &ps) {
@@ -87,7 +237,7 @@ musicxml::convert(musicxml::score_timewise::measure_sequence const &ms) {
   return ps;
 }
 
-musicxml::score_timewise musicxml::convert(score_partwise const &pw) {
+musicxml::score_timewise musicxml::convert(musicxml::score_partwise const &pw) {
   musicxml::score_timewise tw{pw.part_list()};
 
   tw.work(pw.work());
@@ -119,45 +269,42 @@ musicxml::score_partwise musicxml::convert(musicxml::score_timewise const &tw) {
   return pw;
 }
 
-static const XMLCh ls_id[] = {xercesc::chLatin_L, xercesc::chLatin_S,
-                              xercesc::chNull};
-
-void musicxml::serialize(::std::ostream &os,
-                         musicxml::score_partwise const &s) {
-  using namespace xercesc;
-  namespace xml = xsd::cxx::xml;
-
+void musicxml::serialize(std::ostream &os, musicxml::score_partwise const &s) {
   xml::auto_initializer xerces_platform(true, false);
 
-  DOMImplementation *dom{
-    DOMImplementationRegistry::getDOMImplementation(ls_id)};
+  DOMImplementation *dom {
+    DOMImplementationRegistry::getDOMImplementation(ls_id)
+  };
 
   xml::string score_type("score-partwise");
   xml::string dtd_public("-//Recordare//DTD MusicXML " + s.version() +
                          " Partwise//EN");
   xml::string dtd_system("http://www.musicxml.org/dtds/partwise.dtd");
 
-  std::unique_ptr<DOMDocument> doc{dom->createDocument(
-    nullptr, score_type.c_str(),
-    dom->createDocumentType(score_type.c_str(), dtd_public.c_str(),
-                            dtd_system.c_str()))};
+  std::unique_ptr<DOMDocument> doc {
+    dom->createDocument (
+      nullptr, score_type.c_str(),
+      dom->createDocumentType(score_type.c_str(), dtd_public.c_str(),
+                              dtd_system.c_str())
+    )
+  };
 
   musicxml::score_partwise_(*doc, s);
 
-  xsd::cxx::tree::error_handler<char> eh;
+  tree::error_handler<char> eh;
   xml::dom::bits::error_handler_proxy<char> ehp(eh);
 
-  xml::dom::ostream_format_target oft(os);
+  xml::dom::ostream_format_target oft { os };
 
-  std::unique_ptr<DOMLSSerializer> writer{dom->createLSSerializer()};
+  std::unique_ptr<DOMLSSerializer> writer { dom->createLSSerializer() };
 
-  DOMConfiguration *conf{writer->getDomConfig()};
+  DOMConfiguration *conf { writer->getDomConfig() };
 
   conf->setParameter(XMLUni::fgDOMErrorHandler, &ehp);
   conf->setParameter(XMLUni::fgDOMWRTDiscardDefaultContent, true);
   conf->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true);
 
-  std::unique_ptr<DOMLSOutput> output{dom->createLSOutput()};
+  std::unique_ptr<DOMLSOutput> output { dom->createLSOutput() };
   output->setEncoding(xml::string("UTF-8").c_str());
   output->setByteStream(&oft);
 
@@ -166,42 +313,42 @@ void musicxml::serialize(::std::ostream &os,
   eh.throw_if_failed<xsd::cxx::tree::serialization<char>>();
 }
 
-void musicxml::serialize(::std::ostream &os,
-                         musicxml::score_timewise const &s) {
-  using namespace xercesc;
-  namespace xml = xsd::cxx::xml;
+void musicxml::serialize(std::ostream &os, musicxml::score_timewise const &s) {
+  xml::auto_initializer xerces_platform { true, false };
 
-  xml::auto_initializer xerces_platform(true, false);
-
-  DOMImplementation *dom{
-    DOMImplementationRegistry::getDOMImplementation(ls_id)};
+  DOMImplementation *dom {
+    DOMImplementationRegistry::getDOMImplementation(ls_id)
+  };
 
   xml::string score_type("score-timewise");
   xml::string dtd_public("-//Recordare//DTD MusicXML " + s.version() +
                          " Timewise//EN");
   xml::string dtd_system("http://www.musicxml.org/dtds/timewise.dtd");
 
-  std::unique_ptr<DOMDocument> doc{dom->createDocument(
-    nullptr, score_type.c_str(),
-    dom->createDocumentType(score_type.c_str(), dtd_public.c_str(),
-                            dtd_system.c_str()))};
+  std::unique_ptr<DOMDocument> doc {
+    dom->createDocument (
+      nullptr, score_type.c_str(),
+      dom->createDocumentType(score_type.c_str(), dtd_public.c_str(),
+                              dtd_system.c_str())
+    )
+  };
 
   musicxml::score_timewise_(*doc, s);
 
   xsd::cxx::tree::error_handler<char> eh;
-  xml::dom::bits::error_handler_proxy<char> ehp(eh);
+  xml::dom::bits::error_handler_proxy<char> ehp { eh };
 
-  xml::dom::ostream_format_target oft(os);
+  xml::dom::ostream_format_target oft { os };
 
-  std::unique_ptr<DOMLSSerializer> writer{dom->createLSSerializer()};
+  std::unique_ptr<DOMLSSerializer> writer { dom->createLSSerializer() };
 
-  DOMConfiguration *conf{writer->getDomConfig()};
+  DOMConfiguration *conf { writer->getDomConfig() };
 
   conf->setParameter(XMLUni::fgDOMErrorHandler, &ehp);
   conf->setParameter(XMLUni::fgDOMWRTDiscardDefaultContent, true);
   conf->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true);
 
-  std::unique_ptr<DOMLSOutput> output{dom->createLSOutput()};
+  std::unique_ptr<DOMLSOutput> output { dom->createLSOutput() };
   output->setEncoding(xml::string("UTF-8").c_str());
   output->setByteStream(&oft);
 

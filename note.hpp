@@ -43,28 +43,7 @@ public:
   note(const unpitched_type &, const duration_type &);
   note(const rest_type &, const duration_type &);
 
-  /**
-   * @brief Create an instance from a DOM element.
-   *
-   * @param e A DOM element to extract the data from.
-   * @param f Flags to create the new instance with.
-   * @param c A pointer to the object that will contain the new
-   * instance.
-   */
-  note(const ::xercesc::DOMElement &e, ::xml_schema::flags f = 0,
-       ::xml_schema::container *c = nullptr);
-
-  /**
-   * @brief Copy constructor.
-   *
-   * @param x An instance to make a copy of.
-   * @param f Flags to create the copy with.
-   * @param c A pointer to the object that will contain the copy.
-   *
-   * For polymorphic object models use the @c _clone function instead.
-   */
-  note(const note &x, ::xml_schema::flags f = 0,
-       ::xml_schema::container *c = nullptr);
+  using note_base::note_base;
 
   using note_base::grace;
 

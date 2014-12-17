@@ -38,8 +38,7 @@ add_custom_command(
 )
 
 set(SCHEMAS musicxml.xsd xml.xsd xlink.xsd)
-set(SOURCES
-    note.cpp measure1.cpp part1.cpp utilities.cpp
+set(SOURCES note.cpp measure1.cpp part1.cpp utilities.cpp
     ${PROJECT_BINARY_DIR}/musicxml-0.cpp
     ${PROJECT_BINARY_DIR}/musicxml-1.cpp
     ${PROJECT_BINARY_DIR}/musicxml-2.cpp
@@ -47,8 +46,8 @@ set(SOURCES
     ${PROJECT_BINARY_DIR}/xlink.cpp
     ${PROJECT_BINARY_DIR}/xml.cpp
 )
-set(HEADERS
-    note.hpp part1.hpp measure1.hpp utilities.hpp
+set(HEADERS note.hpp part1.hpp measure1.hpp utilities.hpp
+    music_data.hpp music_data_serialization_visitor.hpp
     ${PROJECT_BINARY_DIR}/musicxml.hpp
     ${PROJECT_BINARY_DIR}/xml.hpp ${PROJECT_BINARY_DIR}/xlink.hpp
     ${PROJECT_BINARY_DIR}/musicxml.ipp

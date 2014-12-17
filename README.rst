@@ -16,6 +16,8 @@ during parsing.
     auto timewise = musicxml::parse<musicxml::score_timewise>(std::cin, "-");
     for (auto &measure: timewise.measure()) {
       for (auto &part: measure.part()) {
+        std::clog << measure.number() << ": " << part.id()->part_name()
+                  << std::endl;
         //...
       }
     }
@@ -28,6 +30,8 @@ or
     auto partwise = musicxml::parse<musicxml::score_partwise>(std::cin, "-");
     for (auto &part: partwise.part()) {
       for (auto &measure: part.measure()) {
+        std::clog << part.id()->part_name() << ": " << measure.number()
+                  << std::endl;
         //...
       }
     }
@@ -42,10 +46,14 @@ you can use the musicxml::convert function to flip formats:
     musicxml::serialize(std::cout, musicxml::convert(timewise));
     
 Both, `musicxml::score_partwise::part_type::measure_type` and
-`musicxml::score_timewise::measure_type::part_type` use `boost::variant` to store the
-different allowed element types in a heterogeneous container.  This container
-can be accessed and set with the `music_data()` accessors, and its type
-is available as member type `music_data_sequence`.
+`musicxml::score_timewise::measure_type::part_type` use `boost::variant` to
+store the different allowed element types in a heterogeneous container.  This
+container can be accessed and set with the `music_data()` accessors, and its
+type is available as member type `music_data_sequence`.
+
+`IDREF` attributes are configured to point directly to the referenced
+element type(s).  Some IDREF's are optional though, so be sure to not
+dereference those unconditionally.
 
 Building
 --------

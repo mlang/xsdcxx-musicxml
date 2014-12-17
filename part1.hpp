@@ -81,7 +81,7 @@ public:
   typedef ::musicxml::bookmark bookmark_type;
   typedef ::xsd::cxx::tree::traits<bookmark_type, char> bookmark_traits;
 
-  typedef ::xml_schema::idref id_type;
+  typedef ::xsd::cxx::tree::idref<char, ::xml_schema::ncname, ::musicxml::score_part> id_type;
   typedef ::xsd::cxx::tree::traits<id_type, char> id_traits;
 
   using music_data_type = ::musicxml::music_data;

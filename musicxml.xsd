@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema
+ xmlns:xs="http://www.w3.org/2001/XMLSchema"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ elementFormDefault="qualified"
+ attributeFormDefault="unqualified"
+ xmlns:xse="http://www.codesynthesis.com/xmlns/xml-schema-extension">
 	<xs:annotation>
 		<xs:documentation>MusicXML™ W3C XML schema (XSD)
 
@@ -1963,7 +1968,7 @@ Measure width is specified in tenths. These are the global tenths specified in t
 		<xs:annotation>
 			<xs:documentation>In either partwise or timewise format, the part element has an id attribute that is an IDREF back to a score-part in the part-list.</xs:documentation>
 		</xs:annotation>
-		<xs:attribute name="id" type="xs:IDREF" use="required"/>
+		<xs:attribute name="id" type="xs:IDREF" use="required" xse:refType="score-part"/>
 	</xs:attributeGroup>
 	
 	<xs:attributeGroup name="part-name-text">
@@ -2149,7 +2154,7 @@ These letter dynamic symbols are separated from crescendo, decrescendo, and wedg
 		<xs:simpleContent>
 			<xs:extension base="xs:string">
 				<xs:attribute name="port" type="midi-16"/>
-				<xs:attribute name="id" type="xs:IDREF"/>
+				<xs:attribute name="id" type="xs:IDREF" xse:refType="score-instrument"/>
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
@@ -2200,7 +2205,7 @@ These letter dynamic symbols are separated from crescendo, decrescendo, and wedg
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
-		<xs:attribute name="id" type="xs:IDREF" use="required"/>
+		<xs:attribute name="id" type="xs:IDREF" use="required" xse:refType="midi-instrument"/>
 	</xs:complexType>
 
 	<xs:complexType name="name-display">
@@ -2243,7 +2248,7 @@ These letter dynamic symbols are separated from crescendo, decrescendo, and wedg
 				<xs:element name="other-play" type="other-play"/>
 			</xs:choice>
 		</xs:sequence>
-		<xs:attribute name="id" type="xs:IDREF"/>
+		<xs:attribute name="id" type="xs:IDREF" xse:refType="score-instrument"/>
 	</xs:complexType>
 	
 	<xs:complexType name="string">
@@ -4087,7 +4092,7 @@ Figures are ordered from top to bottom. The value of parentheses is "no" if not 
 		<xs:annotation>
 			<xs:documentation>The instrument type distinguishes between score-instrument elements in a score-part. The id attribute is an IDREF back to the score-instrument ID. If multiple score-instruments are specified on a score-part, there should be an instrument element for each note in the part.</xs:documentation>
 		</xs:annotation>
-		<xs:attribute name="id" type="xs:IDREF" use="required"/>
+		<xs:attribute name="id" type="xs:IDREF" use="required" xse:refType="score-instrument"/>
 	</xs:complexType>
 
 	<xs:complexType name="lyric">

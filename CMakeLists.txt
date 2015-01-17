@@ -34,7 +34,7 @@ add_custom_command(
     --hxx-epilogue '\#include \"utilities.hpp\"'
     --parts 4
     musicxml.xsd
-  DEPENDS ${CMAKE_SOURCE_DIR}/musicxml.xsd
+  DEPENDS ${PROJECT_SOURCE_DIR}/musicxml.xsd
 )
 
 set(SCHEMAS musicxml.xsd xml.xsd xlink.xsd)
@@ -50,9 +50,6 @@ set(HEADERS note.hpp part1.hpp measure1.hpp utilities.hpp
     music_data.hpp music_data_serialization_visitor.hpp
     ${PROJECT_BINARY_DIR}/musicxml.hpp
     ${PROJECT_BINARY_DIR}/xml.hpp ${PROJECT_BINARY_DIR}/xlink.hpp
-    ${PROJECT_BINARY_DIR}/musicxml.ipp
-    ${PROJECT_BINARY_DIR}/xml.ipp
-    ${PROJECT_BINARY_DIR}/xlink.ipp
 )
 
 add_definitions(-DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}")
@@ -73,7 +70,7 @@ add_library(${PROJECT_NAME}-static STATIC ${SOURCES} ${HEADERS})
 target_link_libraries(${PROJECT_NAME}-static ${XERCESC_LIBRARY})
 set_target_properties(${PROJECT_NAME}-static PROPERTIES
   VERSION 0.1
-  PUBLIC_HEADER "${HEADERS}"
+  PUBLIC_HEADER "${HEADERS} musicxml.ipp xml.ipp xlink.ipp"
   RESOURCE "${SCHEMAS}"
 )
 foreach(PROG generate partwise timewise)
@@ -89,3 +86,9 @@ install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}-static
   RESOURCE DESTINATION share/${PROJECT_NAME}
 )
 install(EXPORT ${PROJECT_NAME} DESTINATION share/${PROJECT_NAME})
+
+set_directory_properties(PROPERTIES
+  ADDITIONAL_MAKE_CLEAN_FILES
+  "xml.ipp;xlink.ipp;musicxml.ipp;musicxml-0.cpp;musicxml-1.cpp;musicxml-2.cpp;musicxml-3.cpp;xml.cpp;xlink.cpp"
+)
+

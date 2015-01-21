@@ -15,7 +15,7 @@ foreach(BASENAME xml xlink)
   add_custom_command(
     OUTPUT ${PROJECT_BINARY_DIR}/${BASENAME}.cpp
            ${PROJECT_BINARY_DIR}/${BASENAME}.hpp
-    COMMAND ${XSDCXX_EXECUTABLE} ${XSDCXX_FLAGS} ${BASENAME}.xsd
+    COMMAND ${XSDCXX_EXECUTABLE} ${XSDCXX_FLAGS} ${PROJECT_SOURCE_DIR}/${BASENAME}.xsd
     DEPENDS ${PROJECT_SOURCE_DIR}/${BASENAME}.xsd
   )
 endforeach(BASENAME xml xlink)
@@ -33,7 +33,7 @@ add_custom_command(
     --custom-type part1= --hxx-epilogue '\#include \"part1.hpp\"'
     --hxx-epilogue '\#include \"utilities.hpp\"'
     --parts 4
-    musicxml.xsd
+    ${PROJECT_SOURCE_DIR}/musicxml.xsd
   DEPENDS ${PROJECT_SOURCE_DIR}/musicxml.xsd
 )
 
@@ -55,7 +55,7 @@ set(HEADERS note.hpp part1.hpp measure1.hpp utilities.hpp
 add_definitions(-DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}")
 
 include_directories(
-  ${PROJECT_BINARY_DIR}
+  ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR}
   ${XERCESC_INCLUDE_DIR} ${XSDCXX_INCLUDE_DIR}
 )
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})

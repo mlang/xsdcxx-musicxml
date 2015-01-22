@@ -46,10 +46,17 @@ set(SOURCES note.cpp measure1.cpp part1.cpp utilities.cpp
     ${PROJECT_BINARY_DIR}/xlink.cpp
     ${PROJECT_BINARY_DIR}/xml.cpp
 )
-set(HEADERS note.hpp part1.hpp measure1.hpp utilities.hpp
+set(HEADERS
+    note.hpp part1.hpp measure1.hpp utilities.hpp
     music_data.hpp music_data_serialization_visitor.hpp
+)
+set(GENERATED_HEADERS
     ${PROJECT_BINARY_DIR}/musicxml.hpp
-    ${PROJECT_BINARY_DIR}/xml.hpp ${PROJECT_BINARY_DIR}/xlink.hpp
+    ${PROJECT_BINARY_DIR}/xlink.hpp
+    ${PROJECT_BINARY_DIR}/xml.hpp
+    ${PROJECT_BINARY_DIR}/musicxml.ipp
+    ${PROJECT_BINARY_DIR}/xlink.ipp
+    ${PROJECT_BINARY_DIR}/xml.ipp
 )
 
 add_definitions(-DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}")
@@ -63,14 +70,14 @@ target_link_libraries(${PROJECT_NAME} ${XERCESC_LIBRARY})
 set_target_properties(${PROJECT_NAME} PROPERTIES
   SOVERSION 0
   VERSION 0.1
-  PUBLIC_HEADER "${HEADERS}"
+  PUBLIC_HEADER "${HEADERS};${GENERATED_HEADERS}"
   RESOURCE "${SCHEMAS}"
 )
 add_library(${PROJECT_NAME}-static STATIC ${SOURCES} ${HEADERS})
 target_link_libraries(${PROJECT_NAME}-static ${XERCESC_LIBRARY})
 set_target_properties(${PROJECT_NAME}-static PROPERTIES
   VERSION 0.1
-  PUBLIC_HEADER "${HEADERS} musicxml.ipp xml.ipp xlink.ipp"
+  PUBLIC_HEADER "${HEADERS};${GENERATED_HEADERS}"
   RESOURCE "${SCHEMAS}"
 )
 foreach(PROG generate partwise timewise)

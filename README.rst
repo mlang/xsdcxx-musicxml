@@ -64,17 +64,22 @@ See generate.cpp, partiwse.cpp and timewise.cpp for very simple usage examples.
 
 To use this library in your project,
 
-    #include "xsdcxx-musicxml/musicxml.hpp"
+.. code-block:: c++
 
-and link with the xsdcxx-musicxml library.
+   #include "xsdcxx-musicxml/musicxml.hpp"
 
-You can also use the CMake ADD_SUBDIRECTORY command to directly
+and link with the `xsdcxx-musicxml` library.  If you prefer static linking, use
+`xsdcxx-musicxml-static`.
+
+.. _ADD_SUBDIRECTORY: http://www.cmake.org/cmake/help/v3.0/command/add_subdirectory.html
+
+You can also use the CMake ADD_SUBDIRECTORY_ command to directly
 include this library as a subproject in your CMake based project.
 
 Parent project
 --------------
 
-This library is being developed as a sub-project of BMC, the Braille Music Compiler.
-See http://github.com/mlang/bmc
+.. _BMC: https://github.com/mlang/bmc
 
+This library is being developed as a sub-project of BMC_, the Braille Music Compiler.
 

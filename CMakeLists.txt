@@ -28,10 +28,10 @@ add_custom_command(
   COMMAND ${XSDCXX_EXECUTABLE} ${XSDCXX_FLAGS} --generate-doxygen
     --namespace-map =musicxml --location-regex '%http://.+/\(.+\)%$$1%'
     --root-element-all
-    --custom-type note=/note_base --hxx-epilogue '\#include \"note.hpp\"'
-    --custom-type measure1= --hxx-epilogue '\#include \"measure1.hpp\"'
-    --custom-type part1= --hxx-epilogue '\#include \"part1.hpp\"'
-    --hxx-epilogue '\#include \"utilities.hpp\"'
+    --custom-type note=/note_base --hxx-epilogue '\#include <note.hpp>'
+    --custom-type measure1= --hxx-epilogue '\#include <measure1.hpp>'
+    --custom-type part1= --hxx-epilogue '\#include <part1.hpp>'
+    --hxx-epilogue '\#include <utilities.hpp>'
     --parts 4
     ${PROJECT_SOURCE_DIR}/musicxml.xsd
   DEPENDS ${PROJECT_SOURCE_DIR}/musicxml.xsd

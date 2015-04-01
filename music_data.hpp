@@ -1,4 +1,4 @@
-#include <boost/variant.hpp>
+#include <boost/variant/variant.hpp>
 
 namespace musicxml {
 

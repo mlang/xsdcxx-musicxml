@@ -4,6 +4,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 add_definitions(-std=c++11)
 
 find_package(XSDCXX REQUIRED)
+find_package(Boost REQUIRED)
 set(XSDCXX_FLAGS cxx-tree
     --output-dir ${PROJECT_BINARY_DIR}
     --std c++11 --cxx-suffix .cpp --hxx-suffix .hpp --ixx-suffix .ipp
@@ -28,10 +29,10 @@ add_custom_command(
   COMMAND ${XSDCXX_EXECUTABLE} ${XSDCXX_FLAGS} --generate-doxygen
     --namespace-map =musicxml --location-regex '%http://.+/\(.+\)%$$1%'
     --root-element-all
-    --custom-type note=/note_base --hxx-epilogue '\#include <note.hpp>'
-    --custom-type measure1= --hxx-epilogue '\#include <measure1.hpp>'
-    --custom-type part1= --hxx-epilogue '\#include <part1.hpp>'
-    --hxx-epilogue '\#include <utilities.hpp>'
+    --custom-type note=/note_base --hxx-epilogue \"\#include <note.hpp>\"
+    --custom-type measure1= --hxx-epilogue \"\#include <measure1.hpp>\"
+    --custom-type part1= --hxx-epilogue \"\#include <part1.hpp>\"
+    --hxx-epilogue \"\#include <utilities.hpp>\"
     --parts 4
     ${PROJECT_SOURCE_DIR}/musicxml.xsd
   DEPENDS ${PROJECT_SOURCE_DIR}/musicxml.xsd
@@ -62,6 +63,7 @@ set(GENERATED_HEADERS
 add_definitions(-DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}")
 
 include_directories(
+  ${Boost_INCLUDE_DIRS}
   ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR}
   ${XERCESC_INCLUDE_DIR} ${XSDCXX_INCLUDE_DIR}
 )

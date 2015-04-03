@@ -27,7 +27,7 @@ add_custom_command(
          ${PROJECT_BINARY_DIR}/musicxml-3.cpp
          ${PROJECT_BINARY_DIR}/musicxml.hpp
   COMMAND ${XSDCXX_EXECUTABLE} ${XSDCXX_FLAGS} --generate-doxygen
-    --namespace-map =musicxml --location-regex '%http://.+/\(.+\)%$$1%'
+    --namespace-map =musicxml
     --root-element-all
     --custom-type note=/note_base --hxx-epilogue \"\#include <note.hpp>\"
     --custom-type measure1= --hxx-epilogue \"\#include <measure1.hpp>\"

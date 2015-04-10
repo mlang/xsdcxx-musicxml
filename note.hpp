@@ -43,7 +43,15 @@ public:
   note(const unpitched_type &, const duration_type &);
   note(const rest_type &, const duration_type &);
 
-  using note_base::note_base;
+  note(const ::xercesc::DOMElement& e,
+       ::xml_schema::flags f = 0,
+       ::xml_schema::container* c = 0)
+  : note_base(e, f, c) {}
+
+  note(const note_base& x,
+       ::xml_schema::flags f = 0,
+       ::xml_schema::container* c = 0)
+  : note_base(x, f, c) {}
 
   using note_base::grace;
 

@@ -5,6 +5,22 @@ add_definitions(-std=c++11)
 
 find_package(XSDCXX REQUIRED)
 find_package(Boost REQUIRED)
+include_directories(
+  ${Boost_INCLUDE_DIRS}
+  ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR}
+  ${XERCESC_INCLUDE_DIR} ${XSDCXX_INCLUDE_DIR}
+)
+add_executable(xsdbin xsdbin.cpp)
+target_link_libraries(xsdbin ${XERCESC_LIBRARY})
+add_custom_command(
+  OUTPUT ${PROJECT_BINARY_DIR}/musicxml-schema.cpp
+         ${PROJECT_BINARY_DIR}/musicxml-schema.hpp
+  COMMAND xsdbin --cxx-suffix -schema.cpp --hxx-suffix -schema.hpp
+                 --output-dir ${PROJECT_BINARY_DIR}
+                 ${PROJECT_SOURCE_DIR}/musicxml.xsd
+  DEPENDS ${PROJECT_SOURCE_DIR}/musicxml.xsd
+)
+
 set(XSDCXX_FLAGS cxx-tree
     --output-dir ${PROJECT_BINARY_DIR}
     --std c++11 --cxx-suffix .cpp --hxx-suffix .hpp --ixx-suffix .ipp
@@ -39,13 +55,14 @@ add_custom_command(
 )
 
 set(SCHEMAS musicxml.xsd xml.xsd xlink.xsd)
-set(SOURCES note.cpp measure1.cpp part1.cpp utilities.cpp
+set(SOURCES note.cpp measure1.cpp part1.cpp utilities.cpp grammar-input-stream.cpp
     ${PROJECT_BINARY_DIR}/musicxml-0.cpp
     ${PROJECT_BINARY_DIR}/musicxml-1.cpp
     ${PROJECT_BINARY_DIR}/musicxml-2.cpp
     ${PROJECT_BINARY_DIR}/musicxml-3.cpp
     ${PROJECT_BINARY_DIR}/xlink.cpp
     ${PROJECT_BINARY_DIR}/xml.cpp
+    ${PROJECT_BINARY_DIR}/musicxml-schema.cpp
 )
 set(HEADERS
     note.hpp part1.hpp measure1.hpp utilities.hpp
@@ -62,11 +79,6 @@ set(GENERATED_HEADERS
 
 add_definitions(-DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}")
 
-include_directories(
-  ${Boost_INCLUDE_DIRS}
-  ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR}
-  ${XERCESC_INCLUDE_DIR} ${XSDCXX_INCLUDE_DIR}
-)
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
 target_link_libraries(${PROJECT_NAME} ${XERCESC_LIBRARY})
 set_target_properties(${PROJECT_NAME} PROPERTIES

@@ -34,10 +34,14 @@
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/framework/Wrapper4InputSource.hpp>
+#include <xercesc/framework/XMLGrammarPoolImpl.hpp>
 #include <xercesc/util/XMLUniDefs.hpp> // chLatin_*
 
 #include <xsd/cxx/xml/sax/std-input-source.hxx>
 #include <xsd/cxx/xml/dom/bits/error-handler-proxy.hxx>
+
+#include "grammar-input-stream.hpp"
+#include <musicxml-schema.hpp>
 
 using std::istream;
 using std::ostream;
@@ -55,7 +59,11 @@ using xercesc::DOMImplementationRegistry;
 using xercesc::DOMLSOutput;
 using xercesc::DOMLSParser;
 using xercesc::DOMLSSerializer;
+using xercesc::MemoryManager;
 using xercesc::Wrapper4InputSource;
+using xercesc::XMLGrammarPool;
+using xercesc::XMLGrammarPoolImpl;
+using xercesc::XMLPlatformUtils;
 using xercesc::XMLUni;
 
 namespace xml = xsd::cxx::xml;
@@ -65,12 +73,18 @@ static const XMLCh ls_id[] = {chLatin_L, chLatin_S, chNull};
 
 static std::unique_ptr<DOMDocument>
 dom_document(std::istream &is, const std::string &id, bool validate) {
+  MemoryManager *mm(XMLPlatformUtils::fgMemoryManager);
+  std::unique_ptr<XMLGrammarPool> gp(new XMLGrammarPoolImpl(mm));
+  grammar_input_stream gis(musicxml_schema, sizeof(musicxml_schema));
+  gp->deserializeGrammars(&gis);
+  gp->lockPool();
+
   DOMImplementation *dom {
     DOMImplementationRegistry::getDOMImplementation(ls_id)
   };
 
   std::unique_ptr<DOMLSParser> parser {
-    dom->createLSParser(DOMImplementationLS::MODE_SYNCHRONOUS, nullptr)
+    dom->createLSParser(DOMImplementationLS::MODE_SYNCHRONOUS, nullptr, mm, gp.get())
   };
 
   DOMConfiguration *conf { parser->getDomConfig() };
@@ -98,14 +112,10 @@ dom_document(std::istream &is, const std::string &id, bool validate) {
   conf->setParameter(XMLUni::fgXercesSchema, validate);
   conf->setParameter(XMLUni::fgXercesSchemaFullChecking, false);
 
-  if (validate) {
-    // If the input document does not specify a DTD (which would be atypical
-    // for MusicXML, but could still happen), validation is going to fail
-    // if we do not specify a schema manually.
-    xml::string schemaLoc { "file://" CMAKE_INSTALL_PREFIX "/share/xsdcxx-musicxml/musicxml.xsd" };
-    conf->setParameter(XMLUni::fgXercesSchemaExternalNoNameSpaceSchemaLocation,
-                       schemaLoc.c_str());
-  }
+  // Use the loaded grammar during parsing and disable loading schemas via other
+  // means (e.g., schemaLocation).
+  conf->setParameter(XMLUni::fgXercesUseCachedGrammarInParse, true);
+  conf->setParameter(XMLUni::fgXercesLoadSchema, false);
 
 // Xerces-C++ 3.1.0 is the first version with working multi import
 // support.

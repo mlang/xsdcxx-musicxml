@@ -54,7 +54,6 @@ add_custom_command(
   DEPENDS ${PROJECT_SOURCE_DIR}/musicxml.xsd
 )
 
-set(SCHEMAS musicxml.xsd xml.xsd xlink.xsd)
 set(SOURCES note.cpp measure1.cpp part1.cpp utilities.cpp grammar-input-stream.cpp
     ${PROJECT_BINARY_DIR}/musicxml-0.cpp
     ${PROJECT_BINARY_DIR}/musicxml-1.cpp
@@ -77,22 +76,18 @@ set(GENERATED_HEADERS
     ${PROJECT_BINARY_DIR}/xml.ipp
 )
 
-add_definitions(-DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}")
-
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
 target_link_libraries(${PROJECT_NAME} ${XERCESC_LIBRARY})
 set_target_properties(${PROJECT_NAME} PROPERTIES
   SOVERSION 0
   VERSION 0.1
   PUBLIC_HEADER "${HEADERS};${GENERATED_HEADERS}"
-  RESOURCE "${SCHEMAS}"
 )
 add_library(${PROJECT_NAME}-static STATIC ${SOURCES} ${HEADERS})
 target_link_libraries(${PROJECT_NAME}-static ${XERCESC_LIBRARY})
 set_target_properties(${PROJECT_NAME}-static PROPERTIES
   VERSION 0.1
   PUBLIC_HEADER "${HEADERS};${GENERATED_HEADERS}"
-  RESOURCE "${SCHEMAS}"
 )
 foreach(PROG generate partwise timewise)
   add_executable(${PROG} ${PROG}.cpp)
@@ -104,7 +99,6 @@ install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}-static
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   PUBLIC_HEADER DESTINATION include/${PROJECT_NAME}
-  RESOURCE DESTINATION share/${PROJECT_NAME}
 )
 install(EXPORT ${PROJECT_NAME} DESTINATION share/${PROJECT_NAME})
 

@@ -33,6 +33,7 @@
 #include <istream>
 
 #include <xercesc/dom/DOM.hpp>
+#include <xercesc/framework/MemBufInputSource.hpp>
 #include <xercesc/framework/Wrapper4InputSource.hpp>
 #include <xercesc/framework/XMLGrammarPoolImpl.hpp>
 #include <xercesc/util/XMLUniDefs.hpp> // chLatin_*
@@ -41,6 +42,7 @@
 #include <xsd/cxx/xml/dom/bits/error-handler-proxy.hxx>
 
 #include "grammar-input-stream.hpp"
+#include <musicxml-dtd.hpp>
 #include <musicxml-schema.hpp>
 
 using std::istream;
@@ -56,9 +58,12 @@ using xercesc::DOMElement;
 using xercesc::DOMImplementation;
 using xercesc::DOMImplementationLS;
 using xercesc::DOMImplementationRegistry;
+using xercesc::DOMLSInput;
 using xercesc::DOMLSOutput;
 using xercesc::DOMLSParser;
+using xercesc::DOMLSResourceResolver;
 using xercesc::DOMLSSerializer;
+using xercesc::MemBufInputSource;
 using xercesc::MemoryManager;
 using xercesc::Wrapper4InputSource;
 using xercesc::XMLGrammarPool;
@@ -68,6 +73,33 @@ using xercesc::XMLUni;
 
 namespace xml = xsd::cxx::xml;
 namespace tree = xsd::cxx::tree;
+
+namespace {
+
+class embedded_resource_resolver : public DOMLSResourceResolver
+{
+public:
+  embedded_resource_resolver() {}
+  ~embedded_resource_resolver() {}
+
+  DOMLSInput*
+  resolveResource( XMLCh const * const resourceType
+                 , XMLCh const * const namespaceUri
+                 , XMLCh const * const publicId
+                 , XMLCh const * const systemId
+                 , XMLCh const * const baseURI
+                 )
+  {
+    std::string public_id(xml::transcode<char>(publicId));
+    if (musicxml_dtd.find(public_id) != musicxml_dtd.end()) {
+      auto const &pair = musicxml_dtd.at(public_id);
+      return new Wrapper4InputSource(new MemBufInputSource(pair.first, pair.second, "internal"));
+    }
+    return nullptr;
+  }
+};
+
+}
 
 static const XMLCh ls_id[] = {chLatin_L, chLatin_S, chNull};
 
@@ -89,6 +121,8 @@ dom_document(std::istream &is, const std::string &id, bool validate) {
 
   DOMConfiguration *conf { parser->getDomConfig() };
 
+  embedded_resource_resolver resolver;
+  conf->setParameter(XMLUni::fgDOMResourceResolver, &resolver);
   // Discard comment nodes in the document.
   conf->setParameter(XMLUni::fgDOMComments, false);
 

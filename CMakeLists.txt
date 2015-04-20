@@ -5,6 +5,7 @@ add_definitions(-std=c++11)
 
 find_package(XSDCXX REQUIRED)
 find_package(Boost REQUIRED)
+
 include_directories(
   ${Boost_INCLUDE_DIRS}
   ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR}
@@ -19,6 +20,12 @@ add_custom_command(
                  --output-dir ${PROJECT_BINARY_DIR}
                  ${PROJECT_SOURCE_DIR}/musicxml.xsd
   DEPENDS ${PROJECT_SOURCE_DIR}/musicxml.xsd
+)
+add_executable(dtdbin dtdbin.cpp)
+add_custom_command(
+  OUTPUT ${PROJECT_BINARY_DIR}/musicxml-dtd.cpp
+         ${PROJECT_BINARY_DIR}/musicxml-dtd.hpp
+  COMMAND dtdbin
 )
 
 set(XSDCXX_FLAGS cxx-tree
@@ -61,6 +68,7 @@ set(SOURCES note.cpp measure1.cpp part1.cpp utilities.cpp grammar-input-stream.c
     ${PROJECT_BINARY_DIR}/musicxml-3.cpp
     ${PROJECT_BINARY_DIR}/xlink.cpp
     ${PROJECT_BINARY_DIR}/xml.cpp
+    ${PROJECT_BINARY_DIR}/musicxml-dtd.cpp
     ${PROJECT_BINARY_DIR}/musicxml-schema.cpp
 )
 set(HEADERS
@@ -104,6 +112,6 @@ install(EXPORT ${PROJECT_NAME} DESTINATION share/${PROJECT_NAME})
 
 set_directory_properties(PROPERTIES
   ADDITIONAL_MAKE_CLEAN_FILES
-  "xml.ipp;xlink.ipp;musicxml.ipp;musicxml-0.cpp;musicxml-1.cpp;musicxml-2.cpp;musicxml-3.cpp;xml.cpp;xlink.cpp"
+  "xml.ipp;xlink.ipp;musicxml.ipp;musicxml-0.cpp;musicxml-1.cpp;musicxml-2.cpp;musicxml-3.cpp;xml.cpp;xlink.cpp;musicxml-schema.cpp;musicxml-schema.hpp"
 )
 

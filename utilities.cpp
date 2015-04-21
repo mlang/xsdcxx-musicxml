@@ -76,26 +76,20 @@ namespace tree = xsd::cxx::tree;
 
 namespace {
 
-class embedded_resource_resolver : public DOMLSResourceResolver
-{
-public:
-  embedded_resource_resolver() {}
-  ~embedded_resource_resolver() {}
-
-  DOMLSInput*
-  resolveResource( XMLCh const * const resourceType
-                 , XMLCh const * const namespaceUri
-                 , XMLCh const * const publicId
-                 , XMLCh const * const systemId
-                 , XMLCh const * const baseURI
-                 )
+struct embedded_resource_resolver: DOMLSResourceResolver {
+  DOMLSInput* resolveResource( XMLCh const * const /* resourceType */
+                             , XMLCh const * const /* namespaceUri */
+                             , XMLCh const * const publicId
+                             , XMLCh const * const /* systemId */
+                             , XMLCh const * const /* baseURI */
+                             )
   {
     std::string public_id(xml::transcode<char>(publicId));
     if (musicxml::dtd.find(public_id) != musicxml::dtd.end()) {
       auto const &pair = musicxml::dtd.at(public_id);
-      return new Wrapper4InputSource(new MemBufInputSource
-                                         (pair.first, pair.second,
-                                          public_id.c_str()));
+      auto source = new MemBufInputSource(pair.first, pair.second,
+                                          public_id.c_str());
+      return new Wrapper4InputSource(source);
     }
     return nullptr;
   }

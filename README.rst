@@ -1,7 +1,9 @@
-XSDCXX based MusicXML bindings
-==============================
+XSDCXX based MusicXML bindings for C++
+======================================
 
-xsdcxx-musicxml is a MusicXML binding for C++11 based on xsdcxx.
+.. _xsdcxx: http://codesynthesis.com/projects/xsd/
+
+xsdcxx-musicxml is a MusicXML binding for C++11 based on xsdcxx_.
 The bulk of the source code is automatically generated from the MusicXML
 W3C XML Schema Definition (XSD).  Parsing, manipulation, and serialization
 of MusicXML documents is supported.

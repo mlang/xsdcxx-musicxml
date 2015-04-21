@@ -1,3 +1,5 @@
+// Generate an embedded catalog of MusicXML DTDs.
+
 #include <boost/algorithm/string/replace.hpp>
 
 #include <fstream>
@@ -28,6 +30,7 @@ static std::pair<std::string, std::string> dtds[] = {
 { "-//Recordare//ELEMENTS MusicXML 1.1 Direction//EN", "1.1/direction.dtd" },
 { "-//Recordare//ELEMENTS MusicXML 1.1 Score//EN", "1.1/score.dtd" },
 { "-//Recordare//DTD MusicXML 2.0 Partwise//EN", "2.0/partwise.dtd" },
+{ "-//Recordare//DTD MusicXML 2.0 Timewise//EN", "2.0/timewise.dtd" },
 { "-//Recordare//ELEMENTS MusicXML 2.0 Common//EN", "2.0/common.mod" },
 { "-//Recordare//ELEMENTS MusicXML 2.0 Layout//EN", "2.0/layout.mod" },
 { "-//Recordare//ELEMENTS MusicXML 2.0 Identity//EN", "2.0/identity.mod" },
@@ -75,12 +78,13 @@ int main() {
   hpp << "#endif" << std::endl;
 
   cpp << "#include \"musicxml-dtd.hpp\"" << std::endl;
-
+  cpp << std::endl;
   for (auto &&pair: dtds) {
-    std::ifstream dtd("dtd/" + pair.second);
+    std::string path("dtd/" + pair.second);
+    std::ifstream dtd(path);
     std::istreambuf_iterator<char> dtd_begin(dtd.rdbuf()), dtd_end;
     std::string dtd_string(dtd_begin, dtd_end);
-    cpp << "static XMLByte const " << cpp_identifier(pair.second)
+    cpp << "static XMLByte const " << cpp_identifier(path)
         << "[" << std::dec << dtd_string.length() << "UL] = {";
     for (int i = 0; i < dtd_string.length(); ++i) {
       if ((i % 13) == 0) cpp << std::endl << "  ";
@@ -95,9 +99,10 @@ int main() {
   cpp << "std::map<std::string, std::pair<XMLByte const *, XMLSize_t>> const "
          "musicxml::dtd = {" << std::endl;
   for (auto &&pair: dtds) {
+    std::string path("dtd/" + pair.second);
     cpp << "  { \"" << pair.first << "\"," << std::endl
-        << "    std::make_pair(" << cpp_identifier(pair.second) << ", sizeof("
-        << cpp_identifier(pair.second) << "))" << std::endl << "  },"
+        << "    std::make_pair(" << cpp_identifier(path) << ", sizeof("
+        << cpp_identifier(path) << "))" << std::endl << "  },"
         << std::endl;
   }
   cpp << "};" << std::endl;

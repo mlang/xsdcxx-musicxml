@@ -91,9 +91,11 @@ public:
                  )
   {
     std::string public_id(xml::transcode<char>(publicId));
-    if (musicxml_dtd.find(public_id) != musicxml_dtd.end()) {
-      auto const &pair = musicxml_dtd.at(public_id);
-      return new Wrapper4InputSource(new MemBufInputSource(pair.first, pair.second, "internal"));
+    if (musicxml::dtd.find(public_id) != musicxml::dtd.end()) {
+      auto const &pair = musicxml::dtd.at(public_id);
+      return new Wrapper4InputSource(new MemBufInputSource
+                                         (pair.first, pair.second,
+                                          public_id.c_str()));
     }
     return nullptr;
   }

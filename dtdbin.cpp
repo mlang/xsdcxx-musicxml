@@ -65,9 +65,12 @@ int main() {
   hpp << "#include <xercesc/util/XercesDefs.hpp>" << std::endl;
   hpp << "#include <map>" << std::endl;
   hpp << std::endl;
+  hpp << "namespace musicxml {" << std::endl << std::endl;
   hpp << "extern "
-         "std::map<std::string, std::pair<XMLByte const *, std::size_t>> const "
-         "musicxml_dtd;" << std::endl;
+         "std::map<std::string, std::pair<XMLByte const *, XMLSize_t>> const "
+         "dtd;" << std::endl;
+  hpp << std::endl;
+  hpp << "}" << std::endl;
   hpp << std::endl;
   hpp << "#endif" << std::endl;
 
@@ -80,17 +83,17 @@ int main() {
     cpp << "static XMLByte const " << cpp_identifier(pair.second)
         << "[" << std::dec << dtd_string.length() << "UL] = {";
     for (int i = 0; i < dtd_string.length(); ++i) {
-      if ((i % 12) == 0) cpp << std::endl;
+      if ((i % 13) == 0) cpp << std::endl << "  ";
       cpp << "0X";
       cpp.width(2); cpp.fill('0');
       cpp << std::hex << int(static_cast<unsigned char>(dtd_string[i]));
       if (i < dtd_string.length() - 1) cpp << ", ";
     }
-    cpp << "};" << std::endl << std::endl;
+    cpp << std::endl << "};" << std::endl << std::endl;
   }
 
-  cpp << "std::map<std::string, std::pair<XMLByte const *, size_t>> const "
-         "musicxml_dtd = {" << std::endl;
+  cpp << "std::map<std::string, std::pair<XMLByte const *, XMLSize_t>> const "
+         "musicxml::dtd = {" << std::endl;
   for (auto &&pair: dtds) {
     cpp << "  { \"" << pair.first << "\"," << std::endl
         << "    std::make_pair(" << cpp_identifier(pair.second) << ", sizeof("

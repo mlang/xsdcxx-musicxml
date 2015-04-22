@@ -39,6 +39,7 @@ foreach(BASENAME xml xlink)
   add_custom_command(
     OUTPUT ${PROJECT_BINARY_DIR}/${BASENAME}.cpp
            ${PROJECT_BINARY_DIR}/${BASENAME}.hpp
+           ${PROJECT_BINARY_DIR}/${BASENAME}.ipp
     COMMAND ${XSDCXX_EXECUTABLE} ${XSDCXX_FLAGS} ${PROJECT_SOURCE_DIR}/${BASENAME}.xsd
     DEPENDS ${PROJECT_SOURCE_DIR}/${BASENAME}.xsd
   )
@@ -49,6 +50,7 @@ add_custom_command(
          ${PROJECT_BINARY_DIR}/musicxml-2.cpp
          ${PROJECT_BINARY_DIR}/musicxml-3.cpp
          ${PROJECT_BINARY_DIR}/musicxml.hpp
+         ${PROJECT_BINARY_DIR}/musicxml.ipp
   COMMAND ${XSDCXX_EXECUTABLE} ${XSDCXX_FLAGS} --generate-doxygen
     --namespace-map =musicxml
     --root-element-all
@@ -112,6 +114,6 @@ install(EXPORT ${PROJECT_NAME} DESTINATION share/${PROJECT_NAME})
 
 set_directory_properties(PROPERTIES
   ADDITIONAL_MAKE_CLEAN_FILES
-  "xml.ipp;xlink.ipp;musicxml.ipp;musicxml-0.cpp;musicxml-1.cpp;musicxml-2.cpp;musicxml-3.cpp;xml.cpp;xlink.cpp;musicxml-schema.cpp;musicxml-schema.hpp"
+  "xml.ipp;xlink.ipp;musicxml.ipp;musicxml-0.cpp;musicxml-1.cpp;musicxml-2.cpp;musicxml-3.cpp;xml.cpp;xlink.cpp;musicxml-schema.cpp;musicxml-schema.hpp;musicxml-dtd.cpp;musicxml-dtd.hpp"
 )
 

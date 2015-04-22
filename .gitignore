@@ -3,6 +3,7 @@ CMakeFiles/
 Makefile
 cmake_install.cmake
 compile_commands.json
+dtdbin
 generate
 libxsdcxx-musicxml.so
 libxsdcxx-musicxml.so.0
@@ -10,7 +11,9 @@ libxsdcxx-musicxml.so.0.1
 libxsdcxx-musicxml-static.a
 musicxml.hpp
 musicxml.ipp
+musicxml-dtd.hpp
 musicxml-*.cpp
+musicxml-schema.hpp
 partwise
 timewise
 xlink.cpp
@@ -19,3 +22,4 @@ xlink.ipp
 xml.cpp
 xml.hpp
 xml.ipp
+xsdbin

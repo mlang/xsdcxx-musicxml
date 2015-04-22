@@ -101,7 +101,7 @@ int main() {
   for (auto &&pair: dtds) {
     std::string path("dtd/" + pair.second);
     cpp << "  { \"" << pair.first << "\"," << std::endl
-        << "    std::make_pair(" << cpp_identifier(path) << ", sizeof("
+        << "    std::make_pair(&" << cpp_identifier(path) << "[0], sizeof("
         << cpp_identifier(path) << "))" << std::endl << "  },"
         << std::endl;
   }

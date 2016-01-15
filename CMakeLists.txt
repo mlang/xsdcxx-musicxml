@@ -1,7 +1,6 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8 FATAL_ERROR)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.4.1 FATAL_ERROR)
 project(xsdcxx-musicxml CXX)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
-add_definitions(-std=c++11)
 
 find_package(XSDCXX REQUIRED)
 find_package(Boost REQUIRED)
@@ -12,6 +11,7 @@ include_directories(
   ${XERCESC_INCLUDE_DIR} ${XSDCXX_INCLUDE_DIR}
 )
 add_executable(xsdbin xsdbin.cpp)
+target_compile_features(xsdbin PRIVATE cxx_range_for)
 target_link_libraries(xsdbin ${XERCESC_LIBRARY})
 add_custom_command(
   OUTPUT ${PROJECT_BINARY_DIR}/musicxml-schema.cpp
@@ -22,6 +22,7 @@ add_custom_command(
   DEPENDS ${PROJECT_SOURCE_DIR}/musicxml.xsd
 )
 add_executable(dtdbin dtdbin.cpp)
+target_compile_features(dtdbin PRIVATE cxx_generalized_initializers)
 add_custom_command(
   OUTPUT ${PROJECT_BINARY_DIR}/musicxml-dtd.cpp
          ${PROJECT_BINARY_DIR}/musicxml-dtd.hpp
@@ -87,6 +88,7 @@ set(GENERATED_HEADERS
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_auto_type cxx_range_for)
 target_link_libraries(${PROJECT_NAME} ${XERCESC_LIBRARY})
 set_target_properties(${PROJECT_NAME} PROPERTIES
   SOVERSION 0
@@ -94,6 +96,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
   PUBLIC_HEADER "${HEADERS};${GENERATED_HEADERS}"
 )
 add_library(${PROJECT_NAME}-static STATIC ${SOURCES} ${HEADERS})
+target_compile_features(${PROJECT_NAME}-static PRIVATE cxx_auto_type cxx_range_for)
 target_link_libraries(${PROJECT_NAME}-static ${XERCESC_LIBRARY})
 set_target_properties(${PROJECT_NAME}-static PROPERTIES
   VERSION 0.1
@@ -101,6 +104,7 @@ set_target_properties(${PROJECT_NAME}-static PROPERTIES
 )
 foreach(PROG generate partwise timewise)
   add_executable(${PROG} ${PROG}.cpp)
+  target_compile_features(${PROG} PRIVATE cxx_range_for)
   target_link_libraries(${PROG} ${PROJECT_NAME})
 endforeach(PROG generate partwise timewise)
 

@@ -56,6 +56,7 @@ static std::pair<std::string, std::string> dtds[] = {
 static std::string cpp_identifier(std::string string) {
   boost::algorithm::replace_all(string, ".", "_");
   boost::algorithm::replace_all(string, "/", "_");
+  boost::algorithm::replace_all(string, "-", "_");
 
   return "dtd_" + string;
 }
@@ -94,7 +95,7 @@ int main(int argc, char *argv[]) {
     }
     std::istreambuf_iterator<char> dtd_begin(dtd.rdbuf()), dtd_end;
     std::string dtd_string(dtd_begin, dtd_end);
-    cpp << "static XMLByte const " << cpp_identifier(path)
+    cpp << "static XMLByte const " << cpp_identifier(pair.second)
         << "[" << std::dec << dtd_string.length() << "UL] = {";
     for (int i = 0; i < dtd_string.length(); ++i) {
       if ((i % 13) == 0) cpp << std::endl << "  ";
@@ -112,8 +113,8 @@ int main(int argc, char *argv[]) {
     std::string path(argv[1]);
     path += pair.second;
     cpp << "  { \"" << pair.first << "\"," << std::endl
-        << "    std::make_pair(&" << cpp_identifier(path) << "[0], sizeof("
-        << cpp_identifier(path) << "))" << std::endl << "  },"
+        << "    std::make_pair(&" << cpp_identifier(pair.second) << "[0], sizeof("
+        << cpp_identifier(pair.second) << "))" << std::endl << "  },"
         << std::endl;
   }
   cpp << "};" << std::endl;

@@ -2,17 +2,18 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.4.1 FATAL_ERROR)
 project(xsdcxx-musicxml CXX)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 
-find_package(XSDCXX REQUIRED)
 find_package(Boost REQUIRED)
+find_package(XercesC REQUIRED)
+find_package(XSDCXX REQUIRED)
 
 include_directories(
   ${Boost_INCLUDE_DIRS}
   ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR}
-  ${XERCESC_INCLUDE_DIR} ${XSDCXX_INCLUDE_DIR}
+  ${XercesC_INCLUDE_DIR} ${XSDCXX_INCLUDE_DIR}
 )
 add_executable(xsdbin xsdbin.cpp)
 target_compile_features(xsdbin PRIVATE cxx_range_for)
-target_link_libraries(xsdbin ${XERCESC_LIBRARY})
+target_link_libraries(xsdbin ${XercesC_LIBRARY})
 add_custom_command(
   OUTPUT ${PROJECT_BINARY_DIR}/musicxml-schema.cpp
          ${PROJECT_BINARY_DIR}/musicxml-schema.hpp
@@ -89,7 +90,7 @@ set(GENERATED_HEADERS
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_auto_type cxx_range_for)
-target_link_libraries(${PROJECT_NAME} ${XERCESC_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${XercesC_LIBRARY})
 set_target_properties(${PROJECT_NAME} PROPERTIES
   SOVERSION 0
   VERSION 0.1
@@ -97,7 +98,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 add_library(${PROJECT_NAME}-static STATIC ${SOURCES} ${HEADERS})
 target_compile_features(${PROJECT_NAME}-static PRIVATE cxx_auto_type cxx_range_for)
-target_link_libraries(${PROJECT_NAME}-static ${XERCESC_LIBRARY})
+target_link_libraries(${PROJECT_NAME}-static ${XercesC_LIBRARY})
 set_target_properties(${PROJECT_NAME}-static PROPERTIES
   VERSION 0.1
   PUBLIC_HEADER "${HEADERS};${GENERATED_HEADERS}"

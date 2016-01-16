@@ -17,19 +17,9 @@ find_program(XSDCXX_EXECUTABLE
   NO_SYSTEM_ENVIRONMENT_PATH
 )
 
-if(XSDCXX_INCLUDE_DIR)
-  if(XSDCXX_EXECUTABLE)
-    find_path(XERCESC_INCLUDE_DIR NAMES xercesc/util/XercesVersion.hpp)
-    find_library(XERCESC_LIBRARY NAMES xerces-c xerces-c_3)
-  endif(XSDCXX_EXECUTABLE)
-endif(XSDCXX_INCLUDE_DIR)
-
-mark_as_advanced(
-  XSDCXX_INCLUDE_DIR XSDCXX_EXECUTABLE XERCESC_INCLUDE_DIR XERCESC_LIBRARY
-)
+mark_as_advanced( XSDCXX_INCLUDE_DIR XSDCXX_EXECUTABLE )
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(XSDCXX
   REQUIRED_VARS XSDCXX_EXECUTABLE XSDCXX_INCLUDE_DIR
-                XERCESC_INCLUDE_DIR XERCESC_LIBRARY
 )

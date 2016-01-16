@@ -11,6 +11,8 @@ include_directories(
   ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR}
   ${XercesC_INCLUDE_DIR} ${XSDCXX_INCLUDE_DIR}
 )
+
+# Generate musicxml-schema.{cpp,hpp}
 add_executable(xsdbin xsdbin.cpp)
 target_compile_features(xsdbin PRIVATE cxx_range_for)
 target_link_libraries(xsdbin ${XercesC_LIBRARY})
@@ -22,12 +24,14 @@ add_custom_command(
                  ${PROJECT_SOURCE_DIR}/musicxml.xsd
   DEPENDS ${PROJECT_SOURCE_DIR}/musicxml.xsd
 )
+
+# Generate musicxml-dtd.{cpp,hpp}
 add_executable(dtdbin dtdbin.cpp)
 target_compile_features(dtdbin PRIVATE cxx_generalized_initializers)
 add_custom_command(
   OUTPUT ${PROJECT_BINARY_DIR}/musicxml-dtd.cpp
          ${PROJECT_BINARY_DIR}/musicxml-dtd.hpp
-  COMMAND dtdbin
+  COMMAND dtdbin ${PROJECT_SOURCE_DIR}/dtd/
 )
 
 set(XSDCXX_FLAGS cxx-tree

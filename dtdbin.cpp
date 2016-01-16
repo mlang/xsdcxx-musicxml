@@ -60,7 +60,12 @@ static std::string cpp_identifier(std::string string) {
   return "dtd_" + string;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+  if (argc != 2) {
+    std::cerr << "Usage: dtdbin PATH_TO_DTD_FILES" << std::endl;
+    return EXIT_FAILURE;
+  }
+
   std::ofstream cpp("musicxml-dtd.cpp"), hpp("musicxml-dtd.hpp");
 
   hpp << "#ifndef MUSICXML_DTD_HPP" << std::endl
@@ -80,8 +85,13 @@ int main() {
   cpp << "#include \"musicxml-dtd.hpp\"" << std::endl;
   cpp << std::endl;
   for (auto &&pair: dtds) {
-    std::string path("dtd/" + pair.second);
+    std::string path(argv[1]);
+    path += pair.second;
     std::ifstream dtd(path);
+    if (!dtd.good()) {
+      std::cerr << "DTD file " << path << " not found." << std::endl;
+      return EXIT_FAILURE;
+    }
     std::istreambuf_iterator<char> dtd_begin(dtd.rdbuf()), dtd_end;
     std::string dtd_string(dtd_begin, dtd_end);
     cpp << "static XMLByte const " << cpp_identifier(path)
@@ -99,12 +109,15 @@ int main() {
   cpp << "std::map<std::string, std::pair<XMLByte const *, XMLSize_t>> const "
          "musicxml::dtd = {" << std::endl;
   for (auto &&pair: dtds) {
-    std::string path("dtd/" + pair.second);
+    std::string path(argv[1]);
+    path += pair.second;
     cpp << "  { \"" << pair.first << "\"," << std::endl
         << "    std::make_pair(&" << cpp_identifier(path) << "[0], sizeof("
         << cpp_identifier(path) << "))" << std::endl << "  },"
         << std::endl;
   }
   cpp << "};" << std::endl;
+
+  return EXIT_SUCCESS;
 }
 

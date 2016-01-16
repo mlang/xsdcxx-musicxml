@@ -56,6 +56,8 @@ static std::pair<std::string, std::string> dtds[] = {
 static std::string cpp_identifier(std::string string) {
   boost::algorithm::replace_all(string, ".", "_");
   boost::algorithm::replace_all(string, "/", "_");
+  boost::algorithm::replace_all(string, ":", "_");
+  boost::algorithm::replace_all(string, "-", "_");
 
   return "dtd_" + string;
 }

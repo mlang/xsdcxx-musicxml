@@ -124,8 +124,3 @@ install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}-static
 )
 install(EXPORT ${PROJECT_NAME} DESTINATION share/${PROJECT_NAME})
 
-set_directory_properties(PROPERTIES
-  ADDITIONAL_MAKE_CLEAN_FILES
-  "xml.ipp;xlink.ipp;musicxml.ipp;musicxml-0.cpp;musicxml-1.cpp;musicxml-2.cpp;musicxml-3.cpp;xml.cpp;xlink.cpp;musicxml-schema.cpp;musicxml-schema.hpp;musicxml-dtd.cpp;musicxml-dtd.hpp"
-)
-

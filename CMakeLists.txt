@@ -1,14 +1,17 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.4.1 FATAL_ERROR)
-project(xsdcxx-musicxml CXX)
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
+cmake_minimum_required(VERSION 3.4.1 FATAL_ERROR)
+project(xsdcxx-musicxml VERSION 0.1 LANGUAGES CXX)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}")
 
-find_package(Boost REQUIRED)
+# Find Boost only if a potential parent project hasn't done so already.
+if(NOT ${Boost_FOUND})
+  find_package(Boost REQUIRED)
+endif()
 find_package(XercesC REQUIRED)
 find_package(XSDCXX REQUIRED)
 
 include_directories(
   ${Boost_INCLUDE_DIRS}
-  ${PROJECT_SOURCE_DIR} ${PROJECT_BINARY_DIR}
   ${XercesC_INCLUDE_DIR} ${XSDCXX_INCLUDE_DIR}
 )
 
@@ -97,14 +100,14 @@ target_compile_features(${PROJECT_NAME} PRIVATE cxx_auto_type cxx_range_for)
 target_link_libraries(${PROJECT_NAME} ${XercesC_LIBRARY})
 set_target_properties(${PROJECT_NAME} PROPERTIES
   SOVERSION 0
-  VERSION 0.1
+  VERSION ${PROJECT_VERSION}
   PUBLIC_HEADER "${HEADERS};${GENERATED_HEADERS}"
 )
 add_library(${PROJECT_NAME}-static STATIC ${SOURCES} ${HEADERS})
 target_compile_features(${PROJECT_NAME}-static PRIVATE cxx_auto_type cxx_range_for)
 target_link_libraries(${PROJECT_NAME}-static ${XercesC_LIBRARY})
 set_target_properties(${PROJECT_NAME}-static PROPERTIES
-  VERSION 0.1
+  VERSION ${PROJECT_VERSION}
   PUBLIC_HEADER "${HEADERS};${GENERATED_HEADERS}"
 )
 foreach(PROG generate partwise timewise)

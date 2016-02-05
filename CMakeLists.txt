@@ -97,6 +97,7 @@ set(GENERATED_HEADERS
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS})
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_auto_type cxx_range_for)
+target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${XercesC_LIBRARY})
 set_target_properties(${PROJECT_NAME} PROPERTIES
   SOVERSION 0
@@ -105,6 +106,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 add_library(${PROJECT_NAME}-static STATIC ${SOURCES} ${HEADERS})
 target_compile_features(${PROJECT_NAME}-static PRIVATE cxx_auto_type cxx_range_for)
+target_include_directories(${PROJECT_NAME}-static PUBLIC ${Boost_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME}-static ${XercesC_LIBRARY})
 set_target_properties(${PROJECT_NAME}-static PROPERTIES
   VERSION ${PROJECT_VERSION}

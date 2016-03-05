@@ -70,18 +70,20 @@ int main(int argc, char *argv[]) {
   std::ofstream cpp("musicxml-dtd.cpp"), hpp("musicxml-dtd.hpp");
 
   hpp << "#ifndef MUSICXML_DTD_HPP" << std::endl
-      << "#define MUSICXML_DTD_HPP" << std::endl;
-  hpp << "#include <xercesc/util/XercesDefs.hpp>" << std::endl;
-  hpp << "#include <map>" << std::endl;
-  hpp << std::endl;
-  hpp << "namespace musicxml {" << std::endl << std::endl;
-  hpp << "extern "
+      << "#define MUSICXML_DTD_HPP" << std::endl
+      << "#include <map>" << std::endl
+      << "#include <string>" << std::endl
+      << "#include <xercesc/util/XercesDefs.hpp>" << std::endl
+      << std::endl
+      << "namespace musicxml {" << std::endl
+      << std::endl
+      << "extern "
          "std::map<std::string, std::pair<XMLByte const *, XMLSize_t>> const "
-         "dtd;" << std::endl;
-  hpp << std::endl;
-  hpp << "}" << std::endl;
-  hpp << std::endl;
-  hpp << "#endif" << std::endl;
+         "dtd;" << std::endl
+      << std::endl
+      << "}" << std::endl
+      << std::endl
+      << "#endif" << std::endl;
 
   cpp << "#include \"musicxml-dtd.hpp\"" << std::endl;
   cpp << std::endl;

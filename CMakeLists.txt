@@ -10,10 +10,7 @@ endif()
 find_package(XercesC REQUIRED)
 find_package(XSDCXX REQUIRED)
 
-include_directories(
-  ${Boost_INCLUDE_DIRS}
-  ${XercesC_INCLUDE_DIR} ${XSDCXX_INCLUDE_DIR}
-)
+include_directories(${Boost_INCLUDE_DIR} ${XercesC_INCLUDE_DIR} ${XSDCXX_INCLUDE_DIR})
 
 # Generate musicxml-schema.{cpp,hpp}
 add_executable(xsdbin xsdbin.cpp)

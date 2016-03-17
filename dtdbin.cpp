@@ -99,7 +99,7 @@ int main(int argc, char *argv[]) {
     std::string dtd_string(dtd_begin, dtd_end);
     cpp << "static XMLByte const " << cpp_identifier(pair.second)
         << "[" << std::dec << dtd_string.length() << "UL] = {";
-    for (int i = 0; i < dtd_string.length(); ++i) {
+    for (unsigned i = 0; i < dtd_string.length(); ++i) {
       if ((i % 13) == 0) cpp << std::endl << "  ";
       cpp << "0X";
       cpp.width(2); cpp.fill('0');

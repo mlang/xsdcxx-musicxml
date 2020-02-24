@@ -12,7 +12,7 @@ find_path(XSDCXX_INCLUDE_DIR xsd/cxx/parser/elements.hxx
 )
 
 find_program(XSDCXX_EXECUTABLE
-  NAMES xsd xsdcxx
+  NAMES xsdcxx xsd
   PATHS $ENV{XSDDIR}/bin /usr/local/bin /usr/bin
   NO_SYSTEM_ENVIRONMENT_PATH
 )
